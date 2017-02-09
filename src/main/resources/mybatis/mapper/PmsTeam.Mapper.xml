@@ -1,0 +1,761 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.paipianwang.pat.facade.team.service.dao.impl.PmsTeamDaoImpl">
+
+	<!-- 产品信息表 -->
+	<sql id="pms_Team"> TEAM </sql>
+
+	<resultMap type="PmsTeam" id="beanMap">
+		<id column="teamId" property="id" />
+		<result column="teamName" property="teamName" />
+		<result column="teamPhotoUrl" property="teamPhotoUrl" />
+		<result column="teamDescription" property="teamDescription"/>
+		<result column="createDate" property="createDate" />
+		<result column="od" property="od" />
+		<result column="updateDate" property="updateDate" />
+		<result column="password" property="password" />
+		<result column="phoneNumber" property="phoneNumber" />
+		<result column="email" property="email" />
+		<result column="address" property="address" />
+		<result column="flag" property="flag" />
+		<result column="loginName" property="loginName" />
+		<result column="recommendation" property="recommendation" />
+		<result column="linkman" property="linkman" />
+		<result column="webchat" property="webchat" />
+		<result column="qq" property="qq" />
+		<result column="officialSite" property="officialSite" />
+		<result column="scale" property="scale" />
+		<result column="establishDate" property="establishDate" />
+		<result column="business" property="business" />
+		<result column="businessDesc" property="businessDesc" />
+		<result column="priceRange" property="priceRange" />
+		<result column="demand" property="demand" />
+		<result column="infoResource" property="infoResource" />
+		<result column="description" property="description" />
+		<result column="qqUnique" property="qqUnique" />
+		<result column="wbUnique" property="wbUnique" />
+		<result column="wechatUnique" property="wechatUnique" />
+		<result column="recommend" property="recommend" />
+		<result column="recommendSort" property="recommendSort" />
+		<association property="pmsProvince" column="teamProvince" javaType="PmsProvince">
+            <id property="id" column="id"/>
+            <result property="provinceID" column="provinceID"/>
+            <result property="provinceName" column="province"/>
+        </association>
+        <association property="pmsCity" column="teamCity" javaType="PmsCity">
+            <id property="id" column="cid"/>
+            <result property="cityID" column="cityID"/>
+            <result property="city" column="city"/>
+            <result property="father" column="father"/>
+        </association>
+	</resultMap>
+
+	<sql id="update_condition_sql">
+		<!-- Equal query -->
+		<if test="targetFileId != null and targetFileId != ''"> convertVideoUrl = #{targetFileId}</if>
+	</sql>
+
+
+
+<!-- 	<select id="listPage" parameterType="java.util.Map" resultMap="beanMap">
+		SELECT t.TEAMID AS teamId, 
+		   t.TEAMNAME AS teamName,
+		   t.TEAMPHOTOURL AS teamPhotoUrl,
+		   t.TEAMDESCRIPTION AS teamDescription,
+		   t.RECOMMENDATION AS recommendation,
+		   t.LINKMAN AS linkman,
+		   t.WEBCHAT AS webchat,
+		   t.QQ AS qq,
+		   t.OFFICIALSITE AS officialSite,
+		   t.SCALE AS scale,
+		   t.ESTABLISHDATE AS establishDate,
+		   t.BUSINESS AS business,
+		   t.BUSINESSDESC AS businessDesc,
+		   t.PRICERANGE AS priceRange,
+		   t.DEMAND AS demand,
+		   t.INFORESOURCE AS infoResource,
+		   t.DESCRIPTION AS description,
+		   DATE_FORMAT(t.CREATEDATE,'%Y-%m-%d %T') AS createDate,
+		   DATE_FORMAT(t.UPDATEDATE,'%Y-%m-%d %T') AS updateDate,
+		   t.PHONENUMBER AS phoneNumber,
+		   t.EMAIL AS email,
+		   t.ADDRESS AS address,
+		   t.FLAG AS flag,
+		   t.LOGINNAME AS loginName,
+		   p.id AS id,
+		   p.PROVINCE AS province,
+		   p.provinceID AS provinceID,
+		   c.id AS cid,
+		   c.cityID AS cityID,
+		   c.city AS city,
+		   t.RECOMMEND_SORT recommendSort
+		FROM
+		<include refid="pms_Team" /> t
+		LEFT JOIN  PROVINCE p ON t.teamProvince = p.provinceID 
+		LEFT JOIN  CITY c ON t.teamCity = c.cityID 
+		WHERE 1 = 1
+				AND t.flag != 3
+		<if test='recommend == true '>
+			 AND t.RECOMMEND = 1 
+		</if>
+		<if test="teamId != null and teamId != ''">
+			AND t.TEAMID = ${teamId}
+		</if>
+		<if test="flag != null and flag != ''">
+			AND t.FLAG = ${flag}
+		</if>
+		<if test="priceRange != null and priceRange != ''">
+			AND t.PRICERANGE = #{priceRange}
+		</if>
+		<if test="teamName != null and teamName != ''">
+			AND t.TEAMNAME LIKE CONCAT('%',#{teamName},'%')
+		</if>
+		<if test="phoneNumber != null and phoneNumber != ''">
+			AND t.PHONENUMBER LIKE CONCAT('%',#{phoneNumber},'%')
+		</if>
+		<if test="business != null and business.length>0">
+			<foreach collection="business" item="bus" separator="OR"
+				open="AND (" close=")">
+				t.BUSINESS LIKE CONCAT(CONCAT('%',#{bus}),'%')
+			</foreach>
+		</if>
+		ORDER BY
+		<if test="sort != null and sort != '' and order != null and order != ''">
+			 ${sort} ${order},
+		</if>
+		<if test="recommend == true ">
+			 t.RECOMMEND_SORT ASC, 
+		</if>
+			t.OD ASC,UPDATEDATE DESC,CREATEDATE DESC
+			LIMIT ${begin} , ${limit}
+	</select> -->
+	
+	
+	<select id="listPage"  resultType="PmsTeam">
+		SELECT t.TEAMID AS teamId,
+			   t.TEAMNAME AS teamName,
+			   t.TEAMPHOTOURL AS teamPhotoUrl,
+			   t.TEAMDESCRIPTION AS teamDescription,
+			   t.RECOMMENDATION AS recommendation,
+			   t.CITY AS city,
+			   t.LINKMAN AS linkman,
+			   t.WEBCHAT AS webchat,
+			   t.QQ AS qq,
+			   t.OFFICIALSITE AS officialSite,
+			   t.SCALE AS scale,
+			   t.ESTABLISHDATE AS establishDate,
+			   t.BUSINESS AS business,
+			   t.BUSINESSDESC AS businessDesc,
+			   t.PRICERANGE AS priceRange,
+			   t.DEMAND AS demand,
+			   t.INFORESOURCE AS infoResource,
+			   t.DESCRIPTION AS description,
+			   DATE_FORMAT(t.CREATEDATE,'%Y-%m-%d %T') AS createDate,
+			   DATE_FORMAT(t.UPDATEDATE,'%Y-%m-%d %T') AS updateDate,
+			   t.PHONENUMBER AS phoneNumber,
+			   t.EMAIL AS email,
+			   t.ADDRESS AS address,
+			   t.FLAG AS flag,
+			   t.LOGINNAME AS loginName,
+			   p.PROVINCE AS teamProvinceName,
+			   c.CITY AS teamCityName,
+			   t.TEAMPROVINCE AS teamProvince,
+			   t.TEAMCITY AS teamCity,
+			   t.RECOMMEND_SORT recommendSort
+		    FROM   
+		<include refid="pms_Team" /> t
+				LEFT JOIN  PROVINCE p ON t.teamProvince = p.provinceID 
+				LEFT JOIN CITY c on t.teamCity = c.cityID
+		WHERE 1 = 1
+				AND t.flag != 3
+		<if test='recommend == true '>
+			 AND t.RECOMMEND = 1 
+		</if>
+		<if test="teamId != null and teamId != ''">
+			AND t.TEAMID = ${teamId}
+		</if>
+		<if test="flag != null and flag != ''">
+			AND t.FLAG = ${flag}
+		</if>
+		<if test="priceRange != null and priceRange != ''">
+			AND t.PRICERANGE = #{priceRange}
+		</if>
+		<if test="teamName != null and teamName != ''">
+			AND t.TEAMNAME LIKE CONCAT('%',#{teamName},'%')
+		</if>
+		<if test="phoneNumber != null and phoneNumber != ''">
+			AND t.PHONENUMBER LIKE CONCAT('%',#{phoneNumber},'%')
+		</if>
+		<if test="business != null and business.length>0">
+			<foreach collection="business" item="bus" separator="OR"
+				open="AND (" close=")">
+				t.BUSINESS LIKE CONCAT(CONCAT('%',#{bus}),'%')
+			</foreach>
+		</if>
+		ORDER BY
+		<if test="sort != null and sort != '' and order != null and order != ''">
+			 ${sort} ${order},
+		</if>
+		<if test="recommend == true ">
+			 t.RECOMMEND_SORT ASC, 
+		</if>
+			t.OD ASC,UPDATEDATE DESC,CREATEDATE DESC
+			LIMIT ${begin} , ${limit}
+	</select>
+
+	<select id="listPageCount" parameterType="java.util.Map"
+		resultType="java.lang.Long">
+		SELECT COUNT(1)
+		FROM
+		<include refid="pms_Team" /> t
+		<where>
+			 	t.flag != 3
+			<if test="recommend == true ">
+			 	AND t.RECOMMEND = 1 
+			</if>
+			<if test="teamId != null and teamId != ''">
+				AND t.TEAMID = ${teamId}
+			</if>
+			<if test="flag != null and flag != ''">
+				AND t.FLAG = ${flag}
+			</if>
+			<if test="priceRange != null and priceRange != ''">
+				AND t.PRICERANGE = #{priceRange}
+			</if>
+			<if test="teamName != null and teamName != ''">
+				AND t.TEAMNAME LIKE CONCAT('%',#{teamName},'%')
+			</if>
+			<if test="phoneNumber != null and phoneNumber != ''">
+				AND t.PHONENUMBER LIKE CONCAT('%',#{phoneNumber},'%')
+			</if>
+			<if test="business != null and business.length>0">
+				<foreach collection="business" item="bus" separator="OR"
+					open="AND (" close=")">
+					t.BUSINESS LIKE CONCAT(CONCAT('%',#{bus}),'%')
+				</foreach>
+			</if>
+		</where>
+	</select>
+	
+	
+	<select id="getById" resultType="PmsTeam">
+		SELECT t.TEAMID AS teamId,
+			   t.TEAMID AS id,
+			   t.TEAMNAME AS teamName,
+			   t.FLAG AS flag,
+			   t.TEAMPHOTOURL AS teamPhotoUrl,
+			   t.TEAMDESCRIPTION AS teamDescription,
+			   t.RECOMMENDATION AS recommendation,
+			   t.CITY AS city,
+			   t.LINKMAN AS linkman,
+			   t.WEBCHAT AS webchat,
+			   t.QQ AS qq,
+			   t.OFFICIALSITE AS officialSite,
+			   t.SCALE AS scale,
+			   t.ESTABLISHDATE AS establishDate,
+			   t.BUSINESS AS business,
+			   t.BUSINESSDESC AS businessDesc,
+			   t.PRICERANGE AS priceRange,
+			   t.DEMAND AS demand,
+			   t.INFORESOURCE AS infoResource,
+			   t.DESCRIPTION AS description,
+			   t.PHONENUMBER AS phoneNumber,
+			   t.EMAIL AS email,
+			   t.QQUNIQUE as qqUnique,
+			   t.WECHATUNIQUE as wechatUnique,
+			   t.WBUNIQUE as wbUnique,
+			   t.ADDRESS AS address,
+			   t.LOGINNAME AS loginName,
+			   t.TEAMCITY AS teamCity,
+			   t.TEAMPROVINCE AS teamProvince,
+			   t.RECOMMEND_SORT  recommendSort,
+			   p.PROVINCE AS teamProvinceName,
+			   c.CITY AS teamCityName 
+		FROM 
+			<include refid="pms_Team" /> t
+		LEFT JOIN  PROVINCE p ON t.TEAMPROVINCE = p.provinceID 
+		LEFT JOIN CITY c ON t.TEAMCITY = c.cityID	 
+	<where>
+		TEAMID = #{id}
+	</where>
+		
+	</select>
+	<select id="getTeamInfo" resultType="PmsTeam">
+		SELECT
+		t.TEAMNAME AS teamName,
+		t.TEAMID AS id,
+		p.PROVINCE AS teamProvinceName,
+		c.CITY AS teamCityName,
+		t.TEAMDESCRIPTION AS teamDescription,
+		t.BUSINESS AS business,
+		t.TEAMPHOTOURL AS teamPhotoUrl,
+		t.FLAG AS flag
+		FROM 
+		<include refid="pms_Team" /> t 
+			LEFT JOIN  PROVINCE p ON t.TEAMPROVINCE = p.provinceID 
+			LEFT JOIN CITY c on t.TEAMCITY = c.cityID
+		<where>
+			TEAMID = #{id}
+		</where>
+	</select>
+
+	<select id="checkExist" resultType="long">
+		SELECT COUNT(1)
+		FROM 
+		<include refid="pms_Team" /> t
+		<where>
+			<if test="phoneNumber != null and phoneNumber != ''">
+				t.PHONENUMBER = #{phoneNumber}
+			</if>
+			<if test="loginName != null and loginName != ''">
+				AND t.LOGINNAME = #{loginName}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="save" useGeneratedKeys="true" keyProperty="teamId"
+		parameterType="PmsTeam">
+		<![CDATA[
+			INSERT INTO TEAM (
+				TEAMNAME ,
+				TEAMPHOTOURL ,
+				TEAMDESCRIPTION ,
+				OD,
+				PHONENUMBER,
+				PASSWORD,
+				EMAIL,
+				ADDRESS,
+				FLAG,
+				LOGINNAME,
+				RECOMMENDATION,
+				CITY,
+				LINKMAN,
+				WEBCHAT,
+				QQ,
+				OFFICIALSITE,
+				SCALE,
+				ESTABLISHDATE,
+				BUSINESS,
+				BUSINESSDESC,
+				PRICERANGE,
+				DEMAND,
+				INFORESOURCE,
+				DESCRIPTION,
+				QQUNIQUE,
+				WBUNIQUE,
+				WECHATUNIQUE,
+				TEAMCITY,
+				TEAMPROVINCE
+			) VALUES (
+				#{teamName},
+				#{teamPhotoUrl},
+				#{teamDescription},
+				${od},
+				#{phoneNumber},
+				#{password},
+				#{email},
+				#{address},
+				#{flag},
+				#{loginName},
+				#{recommendation},
+				${city},
+				#{linkman},
+				#{webchat},
+				#{qq},
+				#{officialSite},
+				#{scale},
+				#{establishDate},
+				#{business},
+				#{businessDesc},
+				${priceRange},
+				#{demand},
+				${infoResource},
+				#{description},
+				#{qqUnique},
+				#{wbUnique},
+				#{wechatUnique},
+				#{teamCity},
+				#{teamProvince}
+			)
+		]]>
+	</insert>
+	
+	
+	<select id="checkTeam" resultType="PmsTeam">
+		SELECT t.TEAMID AS teamId,
+			   t.TEAMNAME AS teamName,
+			   t.TEAMPHOTOURL AS teamPhotoUrl,
+			   t.TEAMDESCRIPTION AS teamDescription,
+			   t.PHONENUMBER AS phoneNumber,
+			   t.EMAIL AS email,
+			   t.ADDRESS AS address,
+			   t.FLAG AS flag,
+			   t.LOGINNAME AS loginName,
+			   t.RECOMMENDATION AS recommendation,
+			   t.WECHATUNIQUE AS wechatUnique,
+			   t.QQUNIQUE AS qqUnique,
+			   t.WBUNIQUE AS wbUnique
+		FROM 
+		<include refid="pms_Team" /> t 
+		<where>
+			t.PHONENUMBER = #{phoneNumber}
+		</where>
+	</select>
+	
+	<select id="findTeamByLoginNameAndPwd" resultType="PmsTeam">
+		SELECT t.TEAMID AS teamId,
+			   t.TEAMNAME AS teamName,
+			   t.TEAMPHOTOURL AS teamPhotoUrl,
+			   t.TEAMDESCRIPTION AS teamDescription,
+			   t.PHONENUMBER AS phoneNumber,
+			   t.EMAIL AS email,
+			   t.ADDRESS AS address,
+			   t.FLAG AS flag,
+			   t.LOGINNAME AS loginName,
+			   t.RECOMMENDATION AS recommendation,
+			   t.WECHATUNIQUE AS wechatUnique,
+			   t.QQUNIQUE AS qqUnique,
+			   t.WBUNIQUE AS wbUnique
+		FROM 
+		<include refid="pms_Team" /> t 
+		<where>
+			t.LOGINNAME = #{loginName} AND t.PASSWORD = #{password}
+		</where>
+	</select>
+	<update id="updateTeamAccount">
+		UPDATE 
+		<include refid="pms_Team" /> 
+		<set>
+			UPDATEDATE = CURRENT_TIMESTAMP
+			<if test="loginName != null and loginName != ''">
+				,LOGINNAME = #{loginName}
+			</if>
+			<if test="password != null and password != ''">
+				,PASSWORD = #{password}
+			</if>
+		</set>
+		<where>
+			TEAMID = ${teamId}
+		</where>
+	</update>
+	
+	<update id="updateTeamInfomation">
+		UPDATE
+		<include refid="pms_Team" /> 
+		<set>
+			TEAMNAME = #{teamName},
+			TEAMDESCRIPTION = #{teamDescription},
+			EMAIL = #{email},
+			ADDRESS = #{address},
+			UPDATEDATE = CURRENT_TIMESTAMP,
+			CITY = ${city},
+			LINKMAN = #{linkman},
+			WEBCHAT = #{webchat},
+			QQ = #{qq},
+			OFFICIALSITE = #{officialSite},
+			SCALE = #{scale},
+			ESTABLISHDATE = #{establishDate},
+			BUSINESS = #{business},
+			BUSINESSDESC = #{businessDesc},
+			PRICERANGE = ${priceRange},
+			DEMAND = #{demand},
+			INFORESOURCE = ${infoResource},
+			DESCRIPTION = #{description},
+			TEAMPROVINCE = #{teamProvince},
+			TEAMCITY = #{teamCity}
+			<if test="phoneNumber != null and phoneNumber != ''">
+				,PHONENUMBER = #{phoneNumber}
+			</if>
+			<if test="teamPhotoUrl != null and teamPhotoUrl != ''">
+					,TEAMPHOTOURL = #{teamPhotoUrl}
+			</if>
+		</set>
+		<where>
+			TEAMID = ${teamId}
+		</where>
+	</update>
+	
+	<update id="updateTeamDescription">
+		UPDATE
+		<include refid="pms_Team" /> 
+		<set>
+			DESCRIPTION = #{description},
+			ESTABLISHDATE = #{establishDate},
+			OFFICIALSITE = #{officialSite},
+			BUSINESSDESC = #{businessDesc}
+		</set>
+		<where>
+			TEAMID = ${teamId}
+		</where>
+	</update>
+	
+	<update id="updatePasswordByLoginName">
+		UPDATE 
+		<include refid="pms_Team" /> 
+		<set>
+			PASSWORD = #{password}
+		</set>
+		<where>
+			LOGINNAME = #{loginName}
+		</where>
+	</update>
+	
+	<update id="modifyTeamPhone">
+		UPDATE
+		<include refid="pms_Team" /> 
+		<set>
+			PHONENUMBER =  #{phoneNumber}
+		</set>
+		<where>
+			TEAMID = #{teamId}
+		</where>
+	</update>
+	<select id="getAll" resultType="PmsTeam">
+		SELECT t.TEAMID AS teamId,
+			   t.TEAMNAME AS teamName,
+			   t.TEAMPHOTOURL AS teamPhotoUrl,
+			   t.TEAMDESCRIPTION AS teamDescription,
+			   t.OD AS od,
+			   t.RECOMMENDATION AS recommendation,
+			   t.CITY AS city,
+			   t.LINKMAN AS linkman,
+			   t.WEBCHAT AS webchat,
+			   t.QQ AS qq,
+			   t.OFFICIALSITE AS officialSite,
+			   t.SCALE AS scale,
+			   t.ESTABLISHDATE AS establishDate,
+			   t.BUSINESS AS business,
+			   t.BUSINESSDESC AS businessDesc,
+			   t.PRICERANGE AS priceRange,
+			   t.DEMAND AS demand,
+			   t.INFORESOURCE AS infoResource,
+			   t.DESCRIPTION AS description,
+			   t.EMAIL AS email,
+			   t.ADDRESS AS address,
+			   t.LOGINNAME AS loginName,
+			   t.PHONENUMBER AS phoneNumber
+		FROM 
+		<include refid="pms_Team" />  t
+		<where>
+			TEAMNAME != '' AND t.flag != 3
+		</where>
+	</select>
+	<update id="saveTeamPhotoUrl">
+		UPDATE 
+		<include refid="pms_Team" />
+		<set>
+			TEAMPHOTOURL = #{teamPhotoUrl}
+		</set>
+		<where>
+			TEAMID = #{teamId}
+		</where>
+	</update>
+	
+	
+	<update id="update">
+		UPDATE 
+		<include refid="pms_Team" />
+		<set>
+			TEAMNAME = #{teamName},
+			TEAMDESCRIPTION = #{teamDescription},
+			EMAIL = #{email},
+			ADDRESS = #{address},
+			FLAG = ${flag},
+			RECOMMENDATION = #{recommendation},
+			CITY = ${city},
+			LINKMAN = #{linkman},
+			WEBCHAT = #{webchat},
+			QQ = #{qq},
+			OFFICIALSITE = #{officialSite},
+			SCALE = #{scale},
+			ESTABLISHDATE = #{establishDate},
+			BUSINESS = #{business},
+			BUSINESSDESC = #{businessDesc},
+			PRICERANGE = ${priceRange},
+			DEMAND = #{demand},
+			INFORESOURCE = ${infoResource},
+			DESCRIPTION = #{description},
+			PHONENUMBER = #{phoneNumber}
+			<if test="od != null and od != ''">
+				,OD = ${od}
+			</if>
+			<if test="loginName != null and loginName != ''">
+				,LOGINNAME = #{loginName}
+			</if>
+			<if test="phoneNumber != null and phoneNumber != ''">
+				,PHONENUMBER = #{phoneNumber}
+			</if>
+			<if test="teamProvince != null and teamProvince != ''">
+				,TEAMPROVINCE = #{teamProvince}
+			</if>
+			<if test="teamCity != null and teamCity != ''">
+				,TEAMCITY = #{teamCity}
+			</if>
+			<if test="teamPhotoUrl != null and teamPhotoUrl != ''">
+				,TEAMPHOTOURL = #{teamPhotoUrl}
+			</if>
+		</set>
+		<where>
+			TEAMID = ${teamId}
+		</where>
+	</update>
+	
+	<select id="findTeamByArray" resultType="PmsTeam">
+		SELECT t.TEAMID AS teamId,
+			   t.TEAMPHOTOURL AS teamPhotoUrl
+		FROM 
+		<include refid="pms_Team" /> t
+		<where>
+			t.flag != 3
+			<if test="array != null and array != ''">
+				AND TEAMID IN
+				<foreach collection="array" open="(" close=")" item="item"
+					separator=",">
+					${item}
+				</foreach>
+			</if>
+		</where>
+	</select>
+	<delete id="delete" parameterType="int">
+		DELETE FROM 
+		<include refid="pms_Team" />
+		<where>
+			TEAMID = #{teamId}
+		</where>
+	</delete>
+	
+	<select id="getAllNoRecommend" resultType="PmsTeam">
+		SELECT t.TEAMID AS teamId,
+			   t.TEAMNAME AS teamName,
+			   t.TEAMPHOTOURL AS teamPhotoUrl,
+			   t.TEAMDESCRIPTION AS teamDescription,
+			   t.OD AS od,
+			   t.RECOMMENDATION AS recommendation,
+			   t.CITY AS city,
+			   t.LINKMAN AS linkman,
+			   t.WEBCHAT AS webchat,
+			   t.QQ AS qq,
+			   t.OFFICIALSITE AS officialSite,
+			   t.SCALE AS scale,
+			   t.ESTABLISHDATE AS establishDate,
+			   t.BUSINESS AS business,
+			   t.BUSINESSDESC AS businessDesc,
+			   t.PRICERANGE AS priceRange,
+			   t.DEMAND AS demand,
+			   t.INFORESOURCE AS infoResource,
+			   t.DESCRIPTION AS description,
+			   t.EMAIL AS email,
+			   t.ADDRESS AS address,
+			   t.LOGINNAME AS loginName,
+			   t.PHONENUMBER AS phoneNumber
+		FROM 
+		<include refid="pms_Team" /> t
+		<where>
+			TEAMNAME != ''
+			AND IFNULL(RECOMMEND,0) =0
+			AND t.flag != 3
+		</where>
+	</select>
+	
+	<update id="addRecommend">
+		UPDATE 
+		<include refid="pms_Team" /> t
+		<set>
+			t.RECOMMEND=1,
+		 	t.RECOMMEND_SORT=(
+		 	SELECT maxsort FROM 
+		 		(SELECT IFNULL(MAX(RECOMMEND_SORT) ,0) maxsort FROM TEAM WHERE RECOMMEND=1) tt)+1
+		</set>
+		<where>
+			t.TEAMID=#{teamId}
+		</where>
+	</update>
+	
+	<update id="downSortByRecommendSort">
+		UPDATE 
+		<include refid="pms_Team" />
+		<set>
+			RECOMMEND_SORT=RECOMMEND_SORT+1
+		</set>
+		<where>
+		 	RECOMMEND=1 AND	
+			RECOMMEND_SORT=${_parameter-1}
+		</where>
+	</update>
+	<update id="upSortByTeamId">
+		UPDATE 
+		<include refid="pms_Team" />
+		<set>
+			RECOMMEND_SORT=RECOMMEND_SORT-1 
+		</set>
+		<where>
+		 RECOMMEND=1 AND
+		 TEAMID=${_parameter}
+		</where>
+	</update>
+	
+	<update id="upSortByRecommendSort">
+		UPDATE 
+		<include refid="pms_Team" />
+		<set>
+		 	RECOMMEND_SORT=RECOMMEND_SORT-1
+		</set>
+		<where>
+		 	RECOMMEND=1 AND
+		 	RECOMMEND_SORT=${_parameter+1}
+		</where>
+	</update>
+	<update id="downSortByTeamId">
+		UPDATE 
+		<include refid="pms_Team" />
+		<set>
+			RECOMMEND_SORT=RECOMMEND_SORT+1
+		</set>
+		<where>
+		 	RECOMMEND=1 AND
+		 	TEAMID=${_parameter}
+		</where>
+	</update>
+	<update id="updateRecommendByTeamId">
+		UPDATE 
+		<include refid="pms_Team" />
+		<set>
+			RECOMMEND=#{recommend}
+		</set>
+		<where>
+			TEAMID=${teamId}
+		</where>
+	</update>
+	<update id="upAllAboveIndex">
+		UPDATE 
+		<include refid="pms_Team" />
+		<set>
+			RECOMMEND_SORT=RECOMMEND_SORT-1
+		</set>
+		<where>
+		 RECOMMEND=1 AND
+		 RECOMMEND_SORT>${_parameter}
+		</where>
+	</update>
+	
+	
+	<select id="teamRecommendList" resultType="PmsTeam">
+		SELECT t.TEAMID AS teamId,
+			   t.TEAMNAME AS teamName,
+			   t.TEAMPHOTOURL AS teamPhotoUrl,
+			   t.TEAMDESCRIPTION AS teamDescription,
+			   t.RECOMMENDATION AS recommendation,
+			   t.DESCRIPTION AS description,
+			   t.FLAG AS flag,
+			   t.RECOMMEND_SORT recommendSort
+	    FROM 
+	    <include refid="pms_Team" /> t  
+	    <where>
+	   	 t.flag != 3  AND t.RECOMMEND = 1 
+	    </where>
+		ORDER BY
+		t.RECOMMEND_SORT ASC
+	</select>
+	
+</mapper>
