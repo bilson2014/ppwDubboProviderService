@@ -126,4 +126,6 @@ public interface PmsTeamDao extends BaseDao<PmsTeam>{
 
 	public List<PmsTeam> teamRecommendList();
 
+	public List<PmsTeam> getAllTeamName();
+
 }

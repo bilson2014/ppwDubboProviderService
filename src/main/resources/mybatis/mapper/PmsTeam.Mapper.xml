@@ -541,6 +541,17 @@
 			TEAMNAME != '' AND t.flag != 3
 		</where>
 	</select>
+	
+	<select id="getAllTeamName" resultType="PmsTeam">
+		SELECT t.TEAMID AS teamId,
+			   t.TEAMNAME AS teamName
+		FROM 
+		<include refid="pms_Team" />  t
+		<where>
+			TEAMNAME != '' AND t.flag != 3
+		</where>
+	</select>
+	
 	<update id="saveTeamPhotoUrl">
 		UPDATE 
 		<include refid="pms_Team" />

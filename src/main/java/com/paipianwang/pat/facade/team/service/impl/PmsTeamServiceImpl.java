@@ -264,4 +264,9 @@ public class PmsTeamServiceImpl implements PmsTeamFacade {
 	public List<PmsTeam> teamRecommendList() {
 		return pmsTeamDao.teamRecommendList();
 	}
+
+	@Override
+	public List<PmsTeam> getAllTeamName() {
+		return pmsTeamDao.getAllTeamName();
+	}
 }

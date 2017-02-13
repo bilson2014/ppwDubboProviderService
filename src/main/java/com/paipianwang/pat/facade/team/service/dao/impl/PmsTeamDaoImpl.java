@@ -23,6 +23,7 @@ public class PmsTeamDaoImpl extends BaseDaoImpl<PmsTeam> implements PmsTeamDao {
 	public static final String SQL_UPDATE_PASSWORD_BYLOGINNAME= "updatePasswordByLoginName";
 	public static final String SQL_MODIFY_TEAM_PHONE= "modifyTeamPhone";
 	public static final String SQL_GET_ALL= "getAll";
+	public static final String SQL_GET_ALL_TEAMNAME= "getAllTeamName";
 	public static final String SQL_UPDATE_TEAM_PHOTOURL= "saveTeamPhotoUrl";
 	public static final String SQL_FIND_TEAM_BYARRAY= "findTeamByArray";
 	public static final String SQL_DELETE= "delete";
@@ -94,7 +95,10 @@ public class PmsTeamDaoImpl extends BaseDaoImpl<PmsTeam> implements PmsTeamDao {
 	public List<PmsTeam> getAll() {
 		return sessionTemplate.selectList(getStatement(SQL_GET_ALL));
 	}
-
+	@Override
+	public List<PmsTeam> getAllTeamName() {
+		return sessionTemplate.selectList(getStatement(SQL_GET_ALL_TEAMNAME));
+	}
 	@Override
 	public long saveTeamPhotoUrl(final PmsTeam team) {
 		return sessionTemplate.update(getStatement(SQL_UPDATE_TEAM_PHOTOURL),team);
