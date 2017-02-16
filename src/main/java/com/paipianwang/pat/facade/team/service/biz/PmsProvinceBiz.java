@@ -24,6 +24,10 @@ public class PmsProvinceBiz {
 		return pmsProvinceDao.getAll();
 	}
 
+	public PmsProvince findProvinceById(final String provinceId) {
+		return pmsProvinceDao.findProvinceById(provinceId);
+	}
+
 	
 	
 }

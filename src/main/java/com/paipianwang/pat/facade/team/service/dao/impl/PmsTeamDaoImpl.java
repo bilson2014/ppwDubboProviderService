@@ -36,6 +36,7 @@ public class PmsTeamDaoImpl extends BaseDaoImpl<PmsTeam> implements PmsTeamDao {
 	public static final String SQL_UPDATE_RECOMMEND_BY_TEAMID= "updateRecommendByTeamId";
 	public static final String SQL_UP_ALL_ABOVE_INDEX = "upAllAboveIndex";
 	public static final String SQL_TEAM_RECOMMEND_LIST = "teamRecommendList";
+	public static final String SQL_UNBIND_THIRD = "unBindThird";
 	
 	
 	@Autowired
@@ -157,5 +158,10 @@ public class PmsTeamDaoImpl extends BaseDaoImpl<PmsTeam> implements PmsTeamDao {
 	@Override
 	public List<PmsTeam> teamRecommendList() {
 		return sessionTemplate.selectList(SQL_TEAM_RECOMMEND_LIST);
+	}
+
+	@Override
+	public long teamInfoUnBind(PmsTeam team) {
+		return sessionTemplate.update(getStatement(SQL_UNBIND_THIRD),team);
 	}
 }

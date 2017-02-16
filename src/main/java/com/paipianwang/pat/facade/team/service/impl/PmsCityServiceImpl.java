@@ -28,5 +28,10 @@ public class PmsCityServiceImpl implements PmsCityFacade {
 		return biz.findCitysByProvinceId(provinceId);
 	}
 
+	@Override
+	public List<PmsCity> getAll() {
+		return biz.getAll();
+	}
+
 	
 }

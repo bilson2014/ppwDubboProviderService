@@ -269,4 +269,10 @@ public class PmsTeamServiceImpl implements PmsTeamFacade {
 	public List<PmsTeam> getAllTeamName() {
 		return pmsTeamDao.getAllTeamName();
 	}
+
+	@Override
+	public boolean teamInfoUnBind(final PmsTeam team) {
+		pmsTeamDao.teamInfoUnBind(team);
+		return true;
+	}
 }

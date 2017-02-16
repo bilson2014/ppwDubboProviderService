@@ -768,5 +768,24 @@
 		ORDER BY
 		t.RECOMMEND_SORT ASC
 	</select>
-	
+	<update id="unBindThird">
+			UPDATE  
+			<include refid="pms_Team" />
+			<set>
+				<if test="thirdLoginType=='qq'">
+					 QQUNIQUE =''
+				</if>
+				
+				<if test="thirdLoginType=='wb'">
+					 WBUNIQUE =''
+				</if>
+				
+				<if test="thirdLoginType=='wechat'">
+					 WECHATUNIQUE =''
+				</if>
+			</set>
+			<where>
+				TEAMID = #{teamId}
+			</where>
+	</update>
 </mapper>

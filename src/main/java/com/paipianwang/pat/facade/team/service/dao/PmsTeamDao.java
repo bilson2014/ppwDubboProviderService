@@ -128,4 +128,7 @@ public interface PmsTeamDao extends BaseDao<PmsTeam>{
 
 	public List<PmsTeam> getAllTeamName();
 
+	public long teamInfoUnBind(final PmsTeam team);
+
+
 }

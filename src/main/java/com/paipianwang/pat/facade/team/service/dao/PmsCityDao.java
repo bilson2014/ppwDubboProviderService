@@ -16,6 +16,8 @@ public interface PmsCityDao extends BaseDao<PmsCity>{
 
 	List<PmsCity> findCitysByProvinceId(String provinceId);
 
+	List<PmsCity> getAll();
+
 	
 
 }
