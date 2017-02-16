@@ -14,12 +14,18 @@ import com.paipianwang.pat.facade.team.entity.PmsTeam;
 public class PmsCityDaoImpl extends BaseDaoImpl<PmsCity> implements PmsCityDao {
 
 	public static final String SQL_FIND_CITY_BY_PROVINCEID= "findCitysByProvinceId";
+	public static final String SQL_GETALL= "getAll";
 	@Autowired
 	private SqlSessionTemplate sessionTemplate = null;
 
 	@Override
 	public List<PmsCity> findCitysByProvinceId(String provinceId) {
 		return sessionTemplate.selectList(getStatement(SQL_FIND_CITY_BY_PROVINCEID), provinceId);
+	}
+
+	@Override
+	public List<PmsCity> getAll() {
+		return sessionTemplate.selectList(getStatement(SQL_GETALL));
 	}
 
 }

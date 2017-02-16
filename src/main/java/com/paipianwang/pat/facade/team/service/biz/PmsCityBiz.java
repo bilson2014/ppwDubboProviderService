@@ -23,6 +23,10 @@ public class PmsCityBiz {
 		return pmsCityDao.findCitysByProvinceId(provinceId);
 	}
 
+	public List<PmsCity> getAll() {
+		return pmsCityDao.getAll();
+	}
+
 	
 	
 }

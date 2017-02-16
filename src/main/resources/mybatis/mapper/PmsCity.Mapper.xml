@@ -18,4 +18,13 @@
 		  	father = #{ProvinceId}
 		  </where>
 	</select>
+	<select id="getAll" resultType="PmsCity">
+		SELECT 
+			id AS id,
+			cityID AS cityID,
+			city AS city,
+			father AS father
+		  FROM  
+		  <include refid="pms_City" /> 
+	</select>
 </mapper>

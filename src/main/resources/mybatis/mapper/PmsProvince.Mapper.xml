@@ -14,4 +14,15 @@
 		FROM 
 		<include refid="pms_Province" /> 
 	</select>
+	<select id="findProvinceById" resultType="PmsProvince">
+		SELECT 
+			ID AS id,
+			PROVINCEID AS provinceID,
+			PROVINCE AS provinceName
+		FROM 
+		<include refid="pms_Province" />  
+		<where>
+			PROVINCEID = #{provinceId}
+		</where>
+	</select>
 </mapper>
