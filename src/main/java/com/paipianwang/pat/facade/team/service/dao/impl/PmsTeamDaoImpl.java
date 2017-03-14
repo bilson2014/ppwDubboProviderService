@@ -1,14 +1,14 @@
 package com.paipianwang.pat.facade.team.service.dao.impl;
-
 import java.util.List;
 import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
 import com.paipianwang.pat.common.core.dao.impl.BaseDaoImpl;
-import com.paipianwang.pat.facade.team.service.dao.PmsTeamDao;
 import com.paipianwang.pat.facade.team.entity.PmsTeam;
+import com.paipianwang.pat.facade.team.service.dao.PmsTeamDao;
 @Repository
 public class PmsTeamDaoImpl extends BaseDaoImpl<PmsTeam> implements PmsTeamDao {
 

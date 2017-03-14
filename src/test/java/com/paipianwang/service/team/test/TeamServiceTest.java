@@ -1,4 +1,4 @@
-package com.paipianwang.service.team.test;
+	package com.paipianwang.service.team.test;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -544,6 +544,7 @@
 	
 	<select id="getAllTeamName" resultType="PmsTeam">
 		SELECT t.TEAMID AS teamId,
+		 	   t.PHONENUMBER AS phoneNumber,
 			   t.TEAMNAME AS teamName
 		FROM 
 		<include refid="pms_Team" />  t
