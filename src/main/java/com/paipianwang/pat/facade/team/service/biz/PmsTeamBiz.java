@@ -32,8 +32,8 @@ public class PmsTeamBiz {
 		return pmsTeamDao.listWithPagination(pageParam, paramMap);
 	}
 
-	public PmsTeam findTeamById(long id) {
-		return pmsTeamDao.getById(id);
+	public PmsTeam findTeamById(long teamId) {
+		return pmsTeamDao.getById(teamId);
 	}
 
 	public PmsTeam getTeamInfo(long id) {

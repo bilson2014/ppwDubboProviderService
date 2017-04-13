@@ -277,7 +277,7 @@
 		LEFT JOIN  PROVINCE p ON t.TEAMPROVINCE = p.provinceID 
 		LEFT JOIN CITY c ON t.TEAMCITY = c.cityID	 
 	<where>
-		TEAMID = #{id}
+		TEAMID = #{teamId}
 	</where>
 		
 	</select>
@@ -760,7 +760,8 @@
 			   t.RECOMMENDATION AS recommendation,
 			   t.DESCRIPTION AS description,
 			   t.FLAG AS flag,
-			   t.RECOMMEND_SORT recommendSort
+			   t.RECOMMEND_SORT recommendSort,
+			   t.BUSINESS AS business
 	    FROM 
 	    <include refid="pms_Team" /> t  
 	    <where>
