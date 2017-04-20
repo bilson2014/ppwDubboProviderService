@@ -73,12 +73,16 @@ public class PmsTeamServiceImpl implements PmsTeamFacade {
 	@Override
 	public PmsTeam register(final PmsTeam team) {
 		final long ret = biz.register(team);
-		if (ret == 1){
+		if (ret > 0){
+			// 保存成功
 			team.setTeamId(team.getTeamId());
 			return team;
+		} else if(ret == -1) {
+			PmsTeam pmsTeam = new PmsTeam();
+			pmsTeam.setTeamId(-1);
+			return pmsTeam;
 		}
-		else
-			return null;
+		return null;
 	}
 
 	@Override
