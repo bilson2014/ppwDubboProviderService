@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.paipianwang.pat.facade.team.service.biz.PmsCityBiz;
 import com.paipianwang.pat.facade.team.entity.PmsCity;
 import com.paipianwang.pat.facade.team.service.PmsCityFacade;
+import com.paipianwang.pat.facade.team.service.biz.PmsCityBiz;
 /**
  * city Dubbo服务接口实现
  * @author Jack
