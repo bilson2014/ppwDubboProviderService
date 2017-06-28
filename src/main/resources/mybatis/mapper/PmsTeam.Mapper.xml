@@ -95,6 +95,54 @@
 			t.OD ASC,UPDATEDATE DESC,CREATEDATE DESC
 			LIMIT ${begin} , ${limit}
 	</select>
+	
+	<select id="listBy"  resultType="PmsTeam">
+		SELECT t.TEAMID AS teamId,
+			   t.TEAMNAME AS teamName,
+			   t.TEAMPHOTOURL AS teamPhotoUrl,
+			   t.TEAMDESCRIPTION AS teamDescription,
+			   t.RECOMMENDATION AS recommendation,
+			   t.CITY AS city,
+			   t.LINKMAN AS linkman,
+			   t.WEBCHAT AS webchat,
+			   t.QQ AS qq,
+			   t.OFFICIALSITE AS officialSite,
+			   t.SCALE AS scale,
+			   t.ESTABLISHDATE AS establishDate,
+			   t.BUSINESS AS business,
+			   t.BUSINESSDESC AS businessDesc,
+			   t.PRICERANGE AS priceRange,
+			   t.DEMAND AS demand,
+			   t.INFORESOURCE AS infoResource,
+			   t.DESCRIPTION AS description,
+			   DATE_FORMAT(t.CREATEDATE,'%Y-%m-%d %T') AS createDate,
+			   DATE_FORMAT(t.UPDATEDATE,'%Y-%m-%d %T') AS updateDate,
+			   t.PHONENUMBER AS phoneNumber,
+			   t.EMAIL AS email,
+			   t.ADDRESS AS address,
+			   t.FLAG AS flag,
+			   t.LOGINNAME AS loginName,
+			   p.PROVINCE AS teamProvinceName,
+			   c.CITY AS teamCityName,
+			   t.TEAMPROVINCE AS teamProvince,
+			   t.TEAMCITY AS teamCity,
+			   t.RECOMMEND_SORT recommendSort
+		    FROM   
+		<include refid="pms_Team" /> t
+				LEFT JOIN  PROVINCE p ON t.teamProvince = p.provinceID 
+				LEFT JOIN CITY c on t.teamCity = c.cityID
+		WHERE 1 = 1
+				AND t.flag != 3
+				<include refid="sql_condition" />
+		ORDER BY
+			<if test="sort != null and sort != '' and order != null and order != ''">
+				 ${sort} ${order},
+			</if>
+			<if test="recommend == true ">
+				 t.RECOMMEND_SORT ASC, 
+			</if>
+			t.OD ASC,UPDATEDATE DESC,CREATEDATE DESC
+	</select>
 
 	<select id="listPageCount" parameterType="java.util.Map"
 		resultType="java.lang.Long">

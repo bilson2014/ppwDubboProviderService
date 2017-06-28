@@ -279,4 +279,9 @@ public class PmsTeamServiceImpl implements PmsTeamFacade {
 		pmsTeamDao.teamInfoUnBind(team);
 		return true;
 	}
+
+	@Override
+	public List<PmsTeam> listWithParam(final Map<String, Object> paramMap) {
+		return biz.getTeamsByCondition(paramMap);
+	}
 }

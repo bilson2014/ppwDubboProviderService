@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.paipianwang.pat.common.entity.DataGrid;
 import com.paipianwang.pat.common.entity.PageParam;
 import com.paipianwang.pat.common.util.ValidateUtil;
-import com.paipianwang.pat.facade.team.service.dao.PmsTeamDao;
-import com.paipianwang.pat.facade.team.service.dao.PmsTeamTmpDao;
 import com.paipianwang.pat.facade.team.entity.PmsTeam;
 import com.paipianwang.pat.facade.team.entity.PmsTeamTmp;
+import com.paipianwang.pat.facade.team.service.dao.PmsTeamDao;
+import com.paipianwang.pat.facade.team.service.dao.PmsTeamTmpDao;
 
 /**
  * 订单--服务层接口 事物管理层
@@ -165,6 +164,11 @@ public class PmsTeamBiz {
 		// 2.提升index之下的所有排序
 		int flag2 = pmsTeamDao.upAllAboveIndex(index);
 		return flag1 > 0 && flag2 >= 0;
+	}
+
+	@Transactional
+	public List<PmsTeam> getTeamsByCondition(Map<String, Object> paramMap) {
+		return pmsTeamDao.listBy(paramMap);
 	}
 
 }
