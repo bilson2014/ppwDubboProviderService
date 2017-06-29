@@ -8,7 +8,7 @@ public class TeamServiceTest {
 
 	private static final Log log = LogFactory.getLog(TeamServiceTest.class);
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) { 
 		try {
 			ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring/spring-context.xml");
 			context.start();
