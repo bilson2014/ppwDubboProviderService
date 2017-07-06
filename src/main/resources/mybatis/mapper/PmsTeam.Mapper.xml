@@ -692,12 +692,18 @@
 			   t.RECOMMENDATION AS recommendation,
 			   t.DESCRIPTION AS description,
 			   t.FLAG AS flag,
-			   t.RECOMMEND_SORT recommendSort
+			   t.RECOMMEND_SORT recommendSort,
+			   GROUP_CONCAT(
+					bt.businessName SEPARATOR ','
+				) AS business
 	    FROM 
 	    <include refid="pms_Team" /> t  
+	    LEFT JOIN TEAM_BUSINESS bt ON t.teamId = bt.teamId
 	    <where>
 	   	 t.flag != 3  AND t.RECOMMEND = 1 
 	    </where>
+	    GROUP BY
+			t.teamId
 		ORDER BY
 		t.RECOMMEND_SORT ASC
 	</select>
