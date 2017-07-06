@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.paipianwang.pat.facade.team.service.dao.impl.PmsTeamBusinessDaoImpl">
+	
+	<!-- 供应商业务表 -->
+	<sql id="pms_teamBusiness">TEAM_BUSINESS</sql>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="tbId"
+		parameterType="PmsTeamBusiness">
+			INSERT INTO 
+			<include refid="pms_teamBusiness" /> 
+			(
+			    TEAMID,
+			    BUSINESSNAME
+			)
+			VALUES
+			 (
+				#{teamId},
+				#{businessName}
+			 )
+	</insert>
+	
+	<delete id="deleteByTeamId">
+		DELETE FROM 
+			<include refid="pms_teamBusiness" /> 
+		<where>
+			TEAMID=#{teamId}
+		</where>
+	</delete>
+	
+	<select id="findTeamIdbyBusiness" resultType="long">
+		SELECT 
+			TEAMID
+		  FROM 
+		  <include refid="pms_teamBusiness" /> 
+		  <where>
+		  	BUSINESSNAME = #{businessName}
+		  </where>
+	</select>
+</mapper>

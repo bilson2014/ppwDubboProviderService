@@ -7,9 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.paipianwang.pat.common.util.Constants;
+import com.paipianwang.pat.common.util.ValidateUtil;
 import com.paipianwang.pat.facade.team.entity.DIffBean;
 import com.paipianwang.pat.facade.team.entity.PmsTeam;
+import com.paipianwang.pat.facade.team.entity.PmsTeamBusiness;
 import com.paipianwang.pat.facade.team.entity.PmsTeamTmp;
+import com.paipianwang.pat.facade.team.service.dao.PmsTeamBusinessDao;
 import com.paipianwang.pat.facade.team.service.dao.PmsTeamDao;
 import com.paipianwang.pat.facade.team.service.dao.PmsTeamTmpDao;
 /**
@@ -27,6 +30,8 @@ public class PmsTeamTmpBiz {
 	private PmsTeamTmpDao pmsTeamTmpDao;
 	@Autowired
 	private PmsTeamDao pmsTeamDao;
+	@Autowired
+	private PmsTeamBusinessDao pmsTeamBusinessDao;
 
 	public void updateTeamTmp(PmsTeamTmp teamTmp) {
 		//1.修改teamTmp审核状态和审核信息
@@ -37,6 +42,20 @@ public class PmsTeamTmpBiz {
 			PmsTeam team = pmsTeamDao.getById(tmp.getTeamId());
 			team = moveInfoToTeam(team,tmp);
 			pmsTeamDao.update(team);
+			//更新供应商业务
+			// 删除旧数据
+			pmsTeamBusinessDao.deleteByTeamId(team.getTeamId());
+			// 添加新数据
+			String business = team.getBusiness();
+			if (ValidateUtil.isValid(business)) {
+				String[] businessArray = business.trim().split(",");
+				for (String businessName : businessArray) {
+					PmsTeamBusiness teamBusiness = new PmsTeamBusiness();
+					teamBusiness.setBusinessName(businessName.trim());
+					teamBusiness.setTeamId(team.getTeamId());
+					pmsTeamBusinessDao.insert(teamBusiness);
+				}
+			}
 		}
 	}
 	private PmsTeam moveInfoToTeam(PmsTeam team, PmsTeamTmp tmp) {
@@ -180,18 +199,8 @@ public class PmsTeamTmpBiz {
 			DIffBean bean = new DIffBean();
 			bean.setProperty("business");
 			bean.setPropertyName("业务范围");
-			String[] _teamArray = _team.split(",");
-			String[] tmp_teamArray = tmp_team.split(",");
-			tmp_team = "";
-			_team = "";
-			for(String s : _teamArray){
-				_team += Constants.BUSINESS_MAP.get(s)+",";
-			}
-			for(String s : tmp_teamArray){
-				tmp_team += Constants.BUSINESS_MAP.get(s)+",";
-			}
-			bean.setOldValue(_team.substring(0, _team.lastIndexOf(",")));
-			bean.setNewValue(tmp_team.substring(0, tmp_team.lastIndexOf(",")));
+			bean.setOldValue(_team);
+			bean.setNewValue(tmp_team);
 			list.add(bean);
 		}
 		tmp_team = null == tmp.getTeamDescription()?"":tmp.getTeamDescription();

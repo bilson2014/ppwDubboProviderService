@@ -1,5 +1,6 @@
 package com.paipianwang.pat.facade.team.service.biz;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,9 @@ import com.paipianwang.pat.common.entity.DataGrid;
 import com.paipianwang.pat.common.entity.PageParam;
 import com.paipianwang.pat.common.util.ValidateUtil;
 import com.paipianwang.pat.facade.team.entity.PmsTeam;
+import com.paipianwang.pat.facade.team.entity.PmsTeamBusiness;
 import com.paipianwang.pat.facade.team.entity.PmsTeamTmp;
+import com.paipianwang.pat.facade.team.service.dao.PmsTeamBusinessDao;
 import com.paipianwang.pat.facade.team.service.dao.PmsTeamDao;
 import com.paipianwang.pat.facade.team.service.dao.PmsTeamTmpDao;
 
@@ -31,10 +34,55 @@ public class PmsTeamBiz {
 	private PmsTeamDao pmsTeamDao;
 	@Autowired
 	private PmsTeamTmpDao pmsTeamTmpDao;
+	@Autowired
+	private PmsTeamBusinessDao pmsTeamBusinessDao;
 
 	public DataGrid<PmsTeam> listWithPagination(PageParam pageParam, Map<String, Object> paramMap) {
+		//根据business查询出teamId
+		List<Long> teamIds=getTeamIdByBusiness(paramMap);
+		
+		if(teamIds==null){
+			//无结果,不再查询
+			return new DataGrid<PmsTeam>(0, new ArrayList<PmsTeam>());		
+		}
+		
+		
 		return pmsTeamDao.listWithPagination(pageParam, paramMap);
 	}
+	
+	/**
+	 * 组装根据业务类型检索供应商
+	 *     检索出包含条件中所有业务的供应商id作为检索条件
+	 * @param paramMap
+	 * @return business检索出供应商id集合
+	 *         为null表示无对应供应商，无需继续检索
+	 */
+	private List<Long> getTeamIdByBusiness(Map<String, Object> paramMap){
+		String[] businessArray=(String[]) paramMap.get("business");
+		List<Long> teamIds=new ArrayList<Long>();
+		
+		if(ValidateUtil.isValid(businessArray)){			
+			for(int i=0;i<businessArray.length;i++){
+				//根据business查询teamId
+				List<Long> resu=pmsTeamBusinessDao.getTeamidByBusiness(businessArray[i]);
+				//各集合取交
+				if(i==0){
+					teamIds=resu;
+				}else{
+					teamIds.retainAll(resu);
+				}
+			}
+			if(teamIds.size()==0){
+				//无结果，不继续
+				return null;
+			}else{
+				paramMap.put("teamIds",teamIds);
+			}		
+		}
+		//无business检索条件，跳出
+		return teamIds;
+	}
+
 
 	public PmsTeam findTeamById(long teamId) {
 		return pmsTeamDao.getById(teamId);
@@ -55,8 +103,20 @@ public class PmsTeamBiz {
 		if (ValidateUtil.isValid(list))
 			// 如果list不为空，说明数据库有值
 			return -1;
-		//	否则存入数据
-		return pmsTeamDao.save(team);
+		// 否则存入数据
+		long result = pmsTeamDao.save(team);
+		// 保存供应商业务范围
+		String business = team.getBusiness();
+		if (ValidateUtil.isValid(business)) {
+			String[] businessArray = business.trim().split(",");
+			for (String businessName : businessArray) {
+				PmsTeamBusiness teamBusiness = new PmsTeamBusiness();
+				teamBusiness.setBusinessName(businessName.trim());
+				teamBusiness.setTeamId(team.getTeamId());
+				pmsTeamBusinessDao.insert(teamBusiness);
+			}
+		}
+		return result;
 	}
 
 	public List<PmsTeam> checkTeam(final String phoneNumber) {
@@ -72,7 +132,10 @@ public class PmsTeamBiz {
 	}
 
 	public long updateTeamInfomation(final PmsTeam team) {
-		return pmsTeamDao.updateTeamInfomation(team);
+		long result= pmsTeamDao.updateTeamInfomation(team);
+		//更新team 业务
+		updateBusiness(team);
+		return result;
 	}
 
 	public long updateTeamDescription(final PmsTeam team) {
@@ -107,8 +170,21 @@ public class PmsTeamBiz {
 		return pmsTeamDao.getAll();
 	}
 
+	@Transactional
 	public long save(final PmsTeam team) {
-		return pmsTeamDao.save(team);
+		long result= pmsTeamDao.save(team);
+		//保存供应商业务范围
+		String business=team.getBusiness();
+		if(ValidateUtil.isValid(business)){
+			String[] businessArray=business.trim().split(",");
+			for(String businessName:businessArray){
+				PmsTeamBusiness teamBusiness=new PmsTeamBusiness();
+				teamBusiness.setBusinessName(businessName.trim());
+				teamBusiness.setTeamId(team.getTeamId());
+				pmsTeamBusinessDao.insert(teamBusiness);
+			}
+		}
+		return result;
 	}
 
 	public long saveTeamPhotoUrl(final PmsTeam team) {
@@ -116,7 +192,32 @@ public class PmsTeamBiz {
 	}
 
 	public long update(PmsTeam team) {
-		return pmsTeamDao.update(team);
+		long result= pmsTeamDao.update(team);
+		//更新供应商业务范围
+		updateBusiness(team);
+		return result;
+	}
+	
+	/**
+	 * 更新供应商业务公共方法：
+	 *    删除旧数据
+	 *    插入新数据
+	 * @param team
+	 */
+	private void updateBusiness(PmsTeam team) {
+		// 删除旧数据
+		pmsTeamBusinessDao.deleteByTeamId(team.getTeamId());
+		// 添加新数据
+		String business = team.getBusiness();
+		if (ValidateUtil.isValid(business)) {
+			String[] businessArray = business.trim().split(",");
+			for (String businessName : businessArray) {
+				PmsTeamBusiness teamBusiness = new PmsTeamBusiness();
+				teamBusiness.setBusinessName(businessName.trim());
+				teamBusiness.setTeamId(team.getTeamId());
+				pmsTeamBusinessDao.insert(teamBusiness);
+			}
+		}
 	}
 
 	public List<PmsTeam> delete(long[] ids) {
@@ -125,7 +226,9 @@ public class PmsTeamBiz {
 		final List<PmsTeam> lists = pmsTeamDao.findTeamByArray(paramMap);
 		for (long id : ids) {
 			final long ret = pmsTeamDao.delete(id);
-			if (ret > -1)
+			//删除对应供应商业务
+			pmsTeamBusinessDao.deleteByTeamId(id);
+			if (ret > -1)		
 				continue;
 			else
 				new RuntimeException("delete team error ...");
@@ -168,6 +271,13 @@ public class PmsTeamBiz {
 
 	@Transactional
 	public List<PmsTeam> getTeamsByCondition(Map<String, Object> paramMap) {
+		//根据business查询出teamId
+				List<Long> teamIds=getTeamIdByBusiness(paramMap);
+				
+				if(teamIds==null){
+					//无结果,不再查询
+					return new  ArrayList<PmsTeam>();		
+				}
 		return pmsTeamDao.listBy(paramMap);
 	}
 

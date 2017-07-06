@@ -34,6 +34,7 @@
 		<typeAlias alias="PmsTeamTmp" type="com.paipianwang.pat.facade.team.entity.PmsTeamTmp" />
 		<typeAlias alias="PmsProvince" type="com.paipianwang.pat.facade.team.entity.PmsProvince" />
 		<typeAlias alias="PmsCity" type="com.paipianwang.pat.facade.team.entity.PmsCity" />
+		<typeAlias alias="PmsTeamBusiness" type="com.paipianwang.pat.facade.team.entity.PmsTeamBusiness" />
 	</typeAliases>
 
 	<mappers>
@@ -41,6 +42,7 @@
 		<mapper resource="mybatis/mapper/PmsProvince.Mapper.xml" />
 		<mapper resource="mybatis/mapper/PmsCity.Mapper.xml" />
 		<mapper resource="mybatis/mapper/PmsTeamTmp.Mapper.xml" />
+		<mapper resource="mybatis/mapper/PmsTeamBusiness.Mapper.xml" />
 	</mappers>
 
 </configuration>

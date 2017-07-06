@@ -30,10 +30,11 @@
 		<if test="phoneNumber != null and phoneNumber != ''">
 			AND t.PHONENUMBER LIKE CONCAT('%',#{phoneNumber},'%')
 		</if>
-		<if test="business != null and business.length>0">
-			<foreach collection="business" item="bus" separator="OR"
-				open="AND (" close=")">
-				t.BUSINESS LIKE CONCAT(CONCAT('%',#{bus}),'%')
+		<if test="teamIds != null and teamIds.size>0">
+			AND t.teamId IN 
+			<foreach collection="teamIds" open="(" close=")" item="item"
+					separator=",">
+					#{item}
 			</foreach>
 		</if>
 		<if test="linkman != null and linkman != ''">
@@ -60,7 +61,9 @@
 			   t.OFFICIALSITE AS officialSite,
 			   t.SCALE AS scale,
 			   t.ESTABLISHDATE AS establishDate,
-			   t.BUSINESS AS business,
+			   GROUP_CONCAT(
+					bt.businessName SEPARATOR ','
+				) AS business,
 			   t.BUSINESSDESC AS businessDesc,
 			   t.PRICERANGE AS priceRange,
 			   t.DEMAND AS demand,
@@ -81,10 +84,13 @@
 		    FROM   
 		<include refid="pms_Team" /> t
 				LEFT JOIN  PROVINCE p ON t.teamProvince = p.provinceID 
-				LEFT JOIN CITY c on t.teamCity = c.cityID
+				LEFT JOIN CITY c on t.teamCity = c.cityID 
+				LEFT JOIN TEAM_BUSINESS bt ON t.teamId = bt.teamId
 		WHERE 1 = 1
 				AND t.flag != 3
 				<include refid="sql_condition" />
+		GROUP BY
+			t.teamId
 		ORDER BY
 			<if test="sort != null and sort != '' and order != null and order != ''">
 				 ${sort} ${order},
@@ -109,7 +115,9 @@
 			   t.OFFICIALSITE AS officialSite,
 			   t.SCALE AS scale,
 			   t.ESTABLISHDATE AS establishDate,
-			   t.BUSINESS AS business,
+			   GROUP_CONCAT(
+					bt.businessName SEPARATOR ','
+				) AS business,
 			   t.BUSINESSDESC AS businessDesc,
 			   t.PRICERANGE AS priceRange,
 			   t.DEMAND AS demand,
@@ -131,9 +139,12 @@
 		<include refid="pms_Team" /> t
 				LEFT JOIN  PROVINCE p ON t.teamProvince = p.provinceID 
 				LEFT JOIN CITY c on t.teamCity = c.cityID
+				LEFT JOIN TEAM_BUSINESS bt ON t.teamId = bt.teamId
 		WHERE 1 = 1
 				AND t.flag != 3
 				<include refid="sql_condition" />
+		GROUP BY
+			t.teamId
 		ORDER BY
 			<if test="sort != null and sort != '' and order != null and order != ''">
 				 ${sort} ${order},
@@ -171,8 +182,9 @@
 			   t.QQ AS qq,
 			   t.OFFICIALSITE AS officialSite,
 			   t.SCALE AS scale,
-			   t.ESTABLISHDATE AS establishDate,
-			   t.BUSINESS AS business,
+			   GROUP_CONCAT(
+					bt.businessName SEPARATOR ','
+				) AS business,
 			   t.BUSINESSDESC AS businessDesc,
 			   t.PRICERANGE AS priceRange,
 			   t.DEMAND AS demand,
@@ -193,9 +205,10 @@
 		FROM 
 			<include refid="pms_Team" /> t
 		LEFT JOIN  PROVINCE p ON t.TEAMPROVINCE = p.provinceID 
-		LEFT JOIN CITY c ON t.TEAMCITY = c.cityID	 
+		LEFT JOIN CITY c ON t.TEAMCITY = c.cityID	
+		LEFT JOIN TEAM_BUSINESS bt ON t.teamId = bt.teamId 
 		<where>
-			TEAMID = #{teamId}
+			t.TEAMID = #{teamId}
 		</where>
 		
 	</select>
@@ -207,15 +220,18 @@
 		p.PROVINCE AS teamProvinceName,
 		c.CITY AS teamCityName,
 		t.TEAMDESCRIPTION AS teamDescription,
-		t.BUSINESS AS business,
+		GROUP_CONCAT(
+			bt.businessName SEPARATOR ','
+		) AS business,
 		t.TEAMPHOTOURL AS teamPhotoUrl,
 		t.FLAG AS flag
 		FROM 
 		<include refid="pms_Team" /> t 
 			LEFT JOIN  PROVINCE p ON t.TEAMPROVINCE = p.provinceID 
 			LEFT JOIN CITY c on t.TEAMCITY = c.cityID
+			LEFT JOIN TEAM_BUSINESS bt ON t.teamId = bt.teamId
 		<where>
-			TEAMID = #{id}
+			t.TEAMID = #{id}
 		</where>
 	</select>
 
@@ -255,7 +271,6 @@
 				OFFICIALSITE,
 				SCALE,
 				ESTABLISHDATE,
-				BUSINESS,
 				BUSINESSDESC,
 				PRICERANGE,
 				DEMAND,
@@ -285,7 +300,7 @@
 				#{officialSite},
 				#{scale},
 				#{establishDate},
-				#{business},
+			
 				#{businessDesc},
 				${priceRange},
 				#{demand},
@@ -375,7 +390,6 @@
 			OFFICIALSITE = #{officialSite},
 			SCALE = #{scale},
 			ESTABLISHDATE = #{establishDate},
-			BUSINESS = #{business},
 			BUSINESSDESC = #{businessDesc},
 			PRICERANGE = ${priceRange},
 			DEMAND = #{demand},
@@ -445,7 +459,6 @@
 			   t.OFFICIALSITE AS officialSite,
 			   t.SCALE AS scale,
 			   t.ESTABLISHDATE AS establishDate,
-			   t.BUSINESS AS business,
 			   t.BUSINESSDESC AS businessDesc,
 			   t.PRICERANGE AS priceRange,
 			   t.DEMAND AS demand,
@@ -501,7 +514,6 @@
 			OFFICIALSITE = #{officialSite},
 			SCALE = #{scale},
 			ESTABLISHDATE = #{establishDate},
-			BUSINESS = #{business},
 			BUSINESSDESC = #{businessDesc},
 			PRICERANGE = ${priceRange},
 			DEMAND = #{demand},
@@ -570,7 +582,6 @@
 			   t.OFFICIALSITE AS officialSite,
 			   t.SCALE AS scale,
 			   t.ESTABLISHDATE AS establishDate,
-			   t.BUSINESS AS business,
 			   t.BUSINESSDESC AS businessDesc,
 			   t.PRICERANGE AS priceRange,
 			   t.DEMAND AS demand,
@@ -681,8 +692,7 @@
 			   t.RECOMMENDATION AS recommendation,
 			   t.DESCRIPTION AS description,
 			   t.FLAG AS flag,
-			   t.RECOMMEND_SORT recommendSort,
-			   t.BUSINESS AS business
+			   t.RECOMMEND_SORT recommendSort
 	    FROM 
 	    <include refid="pms_Team" /> t  
 	    <where>
