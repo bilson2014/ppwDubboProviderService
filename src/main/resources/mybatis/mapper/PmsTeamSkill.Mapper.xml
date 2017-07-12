@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.paipianwang.pat.facade.team.service.dao.impl.PmsTeamSkillDaoImpl"> 
+	
+	<!-- 供应商业务技能表 -->
+	<sql id="pms_teamSkill">TEAM_SKILL</sql>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="tsId"
+		parameterType="PmsTeamSkill">
+			INSERT INTO 
+			<include refid="pms_teamSkill" /> 
+			(
+			    TEAMID,
+			    SKILLNAME
+			)
+			VALUES
+			 (
+				#{teamId},
+				#{skillName}
+			 )
+	</insert>
+	
+	<delete id="deleteSkillByTeamId">
+		DELETE FROM 
+			<include refid="pms_teamSkill" /> 
+		<where>
+			TEAMID=#{teamId}
+		</where>
+	</delete>
+	
+	<select id="findTeamIdbySkill" resultType="long">
+		SELECT 
+			TEAMID
+		  FROM 
+		  <include refid="pms_teamSkill" /> 
+		  <where>
+		  	SKILLNAME = #{skillName}
+		  </where>
+	</select>
+</mapper>
