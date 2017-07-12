@@ -19,6 +19,7 @@ public class PmsTeamTmpDaoImpl extends BaseDaoImpl<PmsTeamTmp> implements PmsTea
 	public static final String SQL_UPDATE_TEAMTMP_CHECK= "updateTeamTmpCheck";
 	public static final String SQL_GET_TEAMTMP_BYID= "getTeamTmpById";
 	public static final String SQL_GET_TEAMTMP_BYTEAMID= "getTeamTmpByTeamId";
+	public static final String SQL_DEL_TMP_BY_TEAMID= "delTmpByTeamId";
 	@Autowired
 	private SqlSessionTemplate sessionTemplate = null;
 
@@ -55,6 +56,11 @@ public class PmsTeamTmpDaoImpl extends BaseDaoImpl<PmsTeamTmp> implements PmsTea
 	@Override
 	public List<PmsTeamTmp> getTeamTmpByTeamId(Integer teamId) {
 		return sessionTemplate.selectList(getStatement(SQL_GET_TEAMTMP_BYTEAMID), teamId);
+	}
+
+	@Override
+	public long delTeamByTeamId(long teamId) {
+		return sessionTemplate.delete(SQL_DEL_TMP_BY_TEAMID, teamId);
 	}
 
 }

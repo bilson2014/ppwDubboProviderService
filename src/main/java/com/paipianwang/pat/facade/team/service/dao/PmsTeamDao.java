@@ -130,5 +130,12 @@ public interface PmsTeamDao extends BaseDao<PmsTeam>{
 
 	public long teamInfoUnBind(final PmsTeam team);
 
+	/**
+	 * 注册第一步更新
+	 * @param team
+	 * @return
+	 */
+	public long updateSetp1(PmsTeam team);
+
 
 }

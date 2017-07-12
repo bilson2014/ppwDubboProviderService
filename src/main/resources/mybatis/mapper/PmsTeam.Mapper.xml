@@ -46,6 +46,12 @@
 		<if test="cityID != null and cityID != ''">
 			AND c.CITYID = #{cityID}
 		</if>
+		<if test="productLine != null and productLine != ''">
+			AND t.PRODUCTLINE LIKE CONCAT('%',#{productLine},'%')
+		</if>
+		<if test="teamNature != null and teamNature != ''">
+			AND t.TEAMNATURE = ${teamNature}
+		</if>
 	</sql>
 
 	<select id="listPage"  resultType="PmsTeam">
@@ -62,8 +68,11 @@
 			   t.SCALE AS scale,
 			   t.ESTABLISHDATE AS establishDate,
 			   GROUP_CONCAT(
-					bt.businessName SEPARATOR ','
+					DISTINCT bt.businessName SEPARATOR ','
 				) AS business,
+				GROUP_CONCAT(
+					DISTINCT bs.skillName SEPARATOR ','
+				) AS skill,
 			   t.BUSINESSDESC AS businessDesc,
 			   t.PRICERANGE AS priceRange,
 			   t.DEMAND AS demand,
@@ -80,12 +89,18 @@
 			   c.CITY AS teamCityName,
 			   t.TEAMPROVINCE AS teamProvince,
 			   t.TEAMCITY AS teamCity,
-			   t.RECOMMEND_SORT recommendSort
+			   t.RECOMMEND_SORT recommendSort,
+			   t.PRODUCTLINE productLine,
+			   t.TEAMNATURE teamNature,
+			   t.CERTIFICATEURL certificateUrl,
+			   t.IDCARDFRONTURL idCardfrontUrl,
+			   t.IDCARDBACKURL idCardbackUrl
 		    FROM   
 		<include refid="pms_Team" /> t
 				LEFT JOIN  PROVINCE p ON t.teamProvince = p.provinceID 
 				LEFT JOIN CITY c on t.teamCity = c.cityID 
 				LEFT JOIN TEAM_BUSINESS bt ON t.teamId = bt.teamId
+				LEFT JOIN TEAM_SKILL bs ON t.teamId = bs.teamId
 		WHERE 1 = 1
 				AND t.flag != 3
 				<include refid="sql_condition" />
@@ -98,7 +113,7 @@
 			<if test="recommend == true ">
 				 t.RECOMMEND_SORT ASC, 
 			</if>
-			t.OD ASC,UPDATEDATE DESC,CREATEDATE DESC
+			t.OD ASC,t.UPDATEDATE DESC,t.CREATEDATE DESC
 			LIMIT ${begin} , ${limit}
 	</select>
 	
@@ -116,8 +131,11 @@
 			   t.SCALE AS scale,
 			   t.ESTABLISHDATE AS establishDate,
 			   GROUP_CONCAT(
-					bt.businessName SEPARATOR ','
+					DISTINCT bt.businessName SEPARATOR ','
 				) AS business,
+				GROUP_CONCAT(
+					DISTINCT bs.skillName SEPARATOR ','
+				) AS skill,
 			   t.BUSINESSDESC AS businessDesc,
 			   t.PRICERANGE AS priceRange,
 			   t.DEMAND AS demand,
@@ -140,6 +158,7 @@
 				LEFT JOIN  PROVINCE p ON t.teamProvince = p.provinceID 
 				LEFT JOIN CITY c on t.teamCity = c.cityID
 				LEFT JOIN TEAM_BUSINESS bt ON t.teamId = bt.teamId
+				LEFT JOIN TEAM_SKILL bs ON t.teamId = bs.teamId
 		WHERE 1 = 1
 				AND t.flag != 3
 				<include refid="sql_condition" />
@@ -152,7 +171,7 @@
 			<if test="recommend == true ">
 				 t.RECOMMEND_SORT ASC, 
 			</if>
-			t.OD ASC,UPDATEDATE DESC,CREATEDATE DESC
+			t.OD ASC,t.UPDATEDATE DESC,t.CREATEDATE DESC
 	</select>
 
 	<select id="listPageCount" parameterType="java.util.Map"
@@ -183,8 +202,11 @@
 			   t.OFFICIALSITE AS officialSite,
 			   t.SCALE AS scale,
 			   GROUP_CONCAT(
-					bt.businessName SEPARATOR ','
+					DISTINCT bt.businessName SEPARATOR ','
 				) AS business,
+				GROUP_CONCAT(
+					DISTINCT bs.skillName SEPARATOR ','
+				) AS skill,
 			   t.BUSINESSDESC AS businessDesc,
 			   t.PRICERANGE AS priceRange,
 			   t.DEMAND AS demand,
@@ -201,12 +223,18 @@
 			   t.TEAMPROVINCE AS teamProvince,
 			   t.RECOMMEND_SORT  recommendSort,
 			   p.PROVINCE AS teamProvinceName,
-			   c.CITY AS teamCityName 
+			   c.CITY AS teamCityName ,
+			   t.PRODUCTLINE productLine,
+			   t.TEAMNATURE teamNature,
+			   t.CERTIFICATEURL certificateUrl,
+			   t.IDCARDFRONTURL idCardfrontUrl,
+			   t.IDCARDBACKURL idCardbackUrl
 		FROM 
 			<include refid="pms_Team" /> t
 		LEFT JOIN  PROVINCE p ON t.TEAMPROVINCE = p.provinceID 
 		LEFT JOIN CITY c ON t.TEAMCITY = c.cityID	
 		LEFT JOIN TEAM_BUSINESS bt ON t.teamId = bt.teamId 
+		LEFT JOIN TEAM_SKILL bs ON t.teamId = bs.teamId
 		<where>
 			t.TEAMID = #{teamId}
 		</where>
@@ -280,7 +308,12 @@
 				WBUNIQUE,
 				WECHATUNIQUE,
 				TEAMCITY,
-				TEAMPROVINCE
+				TEAMPROVINCE,
+				PRODUCTLINE,
+				TEAMNATURE,
+				CERTIFICATEURL,
+				IDCARDFRONTURL,
+				IDCARDBACKURL
 			) VALUES (
 				#{teamName},
 				#{teamPhotoUrl},
@@ -310,7 +343,12 @@
 				#{wbUnique},
 				#{wechatUnique},
 				#{teamCity},
-				#{teamProvince}
+				#{teamProvince},
+				#{productLine},
+				#{teamNature},
+				#{certificateUrl},
+				#{idCardfrontUrl},
+				#{idCardbackUrl}
 			)
 		]]>
 	</insert>
@@ -490,7 +528,10 @@
 		UPDATE 
 		<include refid="pms_Team" />
 		<set>
-			TEAMPHOTOURL = #{teamPhotoUrl}
+			TEAMPHOTOURL = #{teamPhotoUrl},
+			certificateUrl=#{certificateUrl},
+			idCardfrontUrl=#{idCardfrontUrl},
+			idCardbackUrl=#{idCardbackUrl}
 		</set>
 		<where>
 			TEAMID = #{teamId}
@@ -519,7 +560,9 @@
 			DEMAND = #{demand},
 			INFORESOURCE = ${infoResource},
 			DESCRIPTION = #{description},
-			PHONENUMBER = #{phoneNumber}
+			PHONENUMBER = #{phoneNumber},
+			PRODUCTLINE = #{productLine},
+			TEAMNATURE=#{teamNature}
 			<if test="od != null and od != ''">
 				,OD = ${od}
 			</if>

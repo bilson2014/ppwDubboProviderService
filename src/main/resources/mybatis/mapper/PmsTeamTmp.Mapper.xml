@@ -20,6 +20,14 @@
 		</where>
 	</update>
 	
+	<delete id="delTmpByTeamId">
+		DELETE FROM 
+			<include refid="pms_TeamTmp" /> 
+		<where>
+			TEAM_ID=#{teamId}
+		</where>
+	</delete>
+	
 	
 	<insert id="addTeamTmp" useGeneratedKeys="true" keyProperty="id"
 		parameterType="PmsTeamTmp">
@@ -47,7 +55,8 @@
 				ESTABLISHDATE,
 				OFFICIALSITE,
 				BUSINESS_DESCRIPTION,
-				TEAMPHOTOURL
+				TEAMPHOTOURL,
+				SKILL
 			) VALUES (
 				${teamId},
 				#{teamName},
@@ -71,7 +80,8 @@
 				#{establishDate},
 				#{officialSite},
 				#{businessDescription},
-				#{teamPhotoUrl}
+				#{teamPhotoUrl},
+				#{skill}
 			)
 		]]>
 	</insert>
@@ -101,7 +111,8 @@
 			ESTABLISHDATE establishDate,
 			OFFICIALSITE officialSite,
 			BUSINESS_DESCRIPTION businessDescription,
-			TEAMPHOTOURL teamPhotoUrl
+			TEAMPHOTOURL teamPhotoUrl,
+			SKILL skill
 		 FROM 
 		 <include refid="pms_TeamTmp" />  tt
 		 <where>
@@ -138,7 +149,8 @@
 			t.RECOMMENDATION recommendation,
 			t.FLAG flag,
 			t.LOGINNAME AS loginName,
-			t.DESCRIPTION description
+			t.DESCRIPTION description,
+			t.SKILL skill
 		 FROM  
 		 <include refid="pms_TeamTmp" />  tt
 		 LEFT JOIN  
@@ -163,7 +175,8 @@
 	           tt.BUSINESS_DESCRIPTION businessDescription,
 	           p.PROVINCE AS teamProvinceName,
 	           c.CITY AS teamCityName,
-	           tt.TEAMPHOTOURL AS teamPhotoUrl
+	           tt.TEAMPHOTOURL AS teamPhotoUrl,
+	           tt.SKILL skill
 		FROM  
 		<include refid="pms_TeamTmp" />  tt
 		LEFT JOIN  
@@ -225,7 +238,8 @@
 			BUSINESS_DESCRIPTION businessDescription,
 			p.PROVINCE AS teamProvinceName,
 			c.CITY AS teamCityName ,
-			tt.TEAMPHOTOURL AS teamPhotoUrl
+			tt.TEAMPHOTOURL AS teamPhotoUrl,
+			SKILL skill
 		 FROM 
 		 <include refid="pms_TeamTmp" /> tt
 		 LEFT JOIN  
@@ -264,7 +278,8 @@
 			ESTABLISHDATE establishDate,
 			OFFICIALSITE officialSite,
 			BUSINESS_DESCRIPTION businessDescription,
-			TEAMPHOTOURL teamPhotoUrl
+			TEAMPHOTOURL teamPhotoUrl,
+			SKILL skill
 		 FROM  
 		 <include refid="pms_TeamTmp" />
 		 <where>

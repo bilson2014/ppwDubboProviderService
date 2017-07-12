@@ -180,6 +180,9 @@ public class PmsTeamServiceImpl implements PmsTeamFacade {
 		if(null != team.getTeamPhotoUrl()){
 			tmp.setTeamPhotoUrl(team.getTeamPhotoUrl());
 		}
+		if(null!=team.getSkill()){
+			tmp.setSkill(team.getSkill());
+		}
 		//删除其他tmp
 		biz.delTeamMapperByTeamId(tmp);
 		//增加一条记录
@@ -284,4 +287,29 @@ public class PmsTeamServiceImpl implements PmsTeamFacade {
 	public List<PmsTeam> listWithParam(final Map<String, Object> paramMap) {
 		return biz.getTeamsByCondition(paramMap);
 	}
+
+	//保存（第一次）/更新注册第一步信息
+	@Override
+	public PmsTeam addOrUpdateStep1(PmsTeam team) {
+		final long ret = biz.addOrUpdateStep1(team);
+		if (ret > 0){
+			// 保存成功
+			team.setTeamId(team.getTeamId());
+			return team;
+		} else if(ret == -1) {
+			PmsTeam pmsTeam = new PmsTeam();
+			pmsTeam.setTeamId(-1);
+			return pmsTeam;
+		}
+		return null;
+	}
+
+	//更新注册第一步信息
+	@Override
+	public PmsTeam updateStep2(PmsTeam team) {
+		
+		return null;
+	}
+
+	
 }

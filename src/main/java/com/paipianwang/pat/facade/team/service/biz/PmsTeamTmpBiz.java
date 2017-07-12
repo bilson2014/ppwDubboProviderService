@@ -11,9 +11,11 @@ import com.paipianwang.pat.common.util.ValidateUtil;
 import com.paipianwang.pat.facade.team.entity.DIffBean;
 import com.paipianwang.pat.facade.team.entity.PmsTeam;
 import com.paipianwang.pat.facade.team.entity.PmsTeamBusiness;
+import com.paipianwang.pat.facade.team.entity.PmsTeamSkill;
 import com.paipianwang.pat.facade.team.entity.PmsTeamTmp;
 import com.paipianwang.pat.facade.team.service.dao.PmsTeamBusinessDao;
 import com.paipianwang.pat.facade.team.service.dao.PmsTeamDao;
+import com.paipianwang.pat.facade.team.service.dao.PmsTeamSkillDao;
 import com.paipianwang.pat.facade.team.service.dao.PmsTeamTmpDao;
 /**
  * 订单--服务层接口
@@ -32,6 +34,8 @@ public class PmsTeamTmpBiz {
 	private PmsTeamDao pmsTeamDao;
 	@Autowired
 	private PmsTeamBusinessDao pmsTeamBusinessDao;
+	@Autowired
+	private PmsTeamSkillDao pmsTeamSkillDao;
 
 	public void updateTeamTmp(PmsTeamTmp teamTmp) {
 		//1.修改teamTmp审核状态和审核信息
@@ -54,6 +58,18 @@ public class PmsTeamTmpBiz {
 					teamBusiness.setBusinessName(businessName.trim());
 					teamBusiness.setTeamId(team.getTeamId());
 					pmsTeamBusinessDao.insert(teamBusiness);
+				}
+			}
+			//更新供应商业务技能-删除后重新添加
+			pmsTeamSkillDao.deleteByTeamId(team.getTeamId());
+			String skill=team.getSkill();
+			if(ValidateUtil.isValid(skill)){
+				String[] skillArray=skill.trim().split(",");
+				for(String skillName:skillArray){
+					PmsTeamSkill teamSkill=new PmsTeamSkill();
+					teamSkill.setTeamId(team.getTeamId());
+					teamSkill.setSkillName(skillName);
+					pmsTeamSkillDao.insert(teamSkill);
 				}
 			}
 		}
@@ -270,6 +286,16 @@ public class PmsTeamTmpBiz {
 			DIffBean bean = new DIffBean();
 			bean.setProperty("teamPhotoUrl");
 			bean.setPropertyName("公司Logo");
+			bean.setOldValue(_team);
+			bean.setNewValue(tmp_team);
+			list.add(bean);
+		}
+		tmp_team = null == tmp.getSkill()?"":tmp.getSkill();
+		_team = null == team.getSkill()?"":team.getSkill();
+		if(tmp_team.compareTo(_team) != 0){
+			DIffBean bean = new DIffBean();
+			bean.setProperty("skill");
+			bean.setPropertyName("业务技能");
 			bean.setOldValue(_team);
 			bean.setNewValue(tmp_team);
 			list.add(bean);

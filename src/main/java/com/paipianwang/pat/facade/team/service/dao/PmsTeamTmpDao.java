@@ -37,6 +37,11 @@ public interface PmsTeamTmpDao extends BaseDao<PmsTeamTmp>{
 	public PmsTeamTmp getTeamTmpById(Long teamId);
 	
 	public List<PmsTeamTmp> getTeamTmpByTeamId(Integer teamId);
+	/**
+	 * 删除供应商临时数据-物理
+	 * @param teamId
+	 */
+	public long delTeamByTeamId(long teamId);
 
 
 }

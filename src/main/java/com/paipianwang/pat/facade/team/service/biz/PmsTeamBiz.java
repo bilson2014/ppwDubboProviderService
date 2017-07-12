@@ -14,9 +14,11 @@ import com.paipianwang.pat.common.entity.PageParam;
 import com.paipianwang.pat.common.util.ValidateUtil;
 import com.paipianwang.pat.facade.team.entity.PmsTeam;
 import com.paipianwang.pat.facade.team.entity.PmsTeamBusiness;
+import com.paipianwang.pat.facade.team.entity.PmsTeamSkill;
 import com.paipianwang.pat.facade.team.entity.PmsTeamTmp;
 import com.paipianwang.pat.facade.team.service.dao.PmsTeamBusinessDao;
 import com.paipianwang.pat.facade.team.service.dao.PmsTeamDao;
+import com.paipianwang.pat.facade.team.service.dao.PmsTeamSkillDao;
 import com.paipianwang.pat.facade.team.service.dao.PmsTeamTmpDao;
 
 /**
@@ -36,29 +38,55 @@ public class PmsTeamBiz {
 	private PmsTeamTmpDao pmsTeamTmpDao;
 	@Autowired
 	private PmsTeamBusinessDao pmsTeamBusinessDao;
+	@Autowired
+	private PmsTeamSkillDao pmsTeamSkillDao;
 
 	public DataGrid<PmsTeam> listWithPagination(PageParam pageParam, Map<String, Object> paramMap) {
 		//根据business查询出teamId
 		List<Long> teamIds=getTeamIdByBusiness(paramMap);
+		//根据skill查询出teamId
+		List<Long> teamIdBySkill=getTeamIdBySkill(paramMap);
 		
-		if(teamIds==null){
-			//无结果,不再查询
-			return new DataGrid<PmsTeam>(0, new ArrayList<PmsTeam>());		
+//		if(teamIds!=null || teamIdBySkill!=null){
+//			//无结果,不再查询
+//			return new DataGrid<PmsTeam>(0, new ArrayList<PmsTeam>());		
+//		}
+//		//结果取交，组装检索条件	
+//		if(teamIds.size()>0 && teamIdBySkill.size()>0){
+//			teamIds.retainAll(teamIdBySkill);
+//			paramMap.put("teamIds",teamIds);
+//		}
+		
+		//结果取交
+		if(teamIds!=null){
+			teamIds.retainAll(teamIdBySkill);
+		}else{
+			teamIds=teamIdBySkill;
 		}
 		
+		if(teamIds!=null && teamIds.size()==0){
+			//无结果,不再查询
+			return new DataGrid<PmsTeam>(0, new ArrayList<PmsTeam>());	
+		}
+		
+		if(teamIds!=null){
+			paramMap.put("teamIds",teamIds);
+		}
 		
 		return pmsTeamDao.listWithPagination(pageParam, paramMap);
 	}
+	
 	
 	/**
 	 * 组装根据业务类型检索供应商
 	 *     检索出包含条件中所有业务的供应商id作为检索条件
 	 * @param paramMap
 	 * @return business检索出供应商id集合
-	 *         为null表示无对应供应商，无需继续检索
+	 *         为null表示无需继续检索
 	 */
 	private List<Long> getTeamIdByBusiness(Map<String, Object> paramMap){
 		String[] businessArray=(String[]) paramMap.get("business");
+		paramMap.remove("business");
 		List<Long> teamIds=new ArrayList<Long>();
 		
 		if(ValidateUtil.isValid(businessArray)){			
@@ -72,15 +100,37 @@ public class PmsTeamBiz {
 					teamIds.retainAll(resu);
 				}
 			}
-			if(teamIds.size()==0){
-				//无结果，不继续
-				return null;
-			}else{
-				paramMap.put("teamIds",teamIds);
-			}		
+			return teamIds;	
 		}
-		//无business检索条件，跳出
-		return teamIds;
+		// 无business检索条件，返回空集合
+		return null;
+	}
+	
+	/**
+	 * 组装根据业务技能检索供应商
+	 * @param paramMap 
+	 * @return 满足条件的供应商id集合 null-无需检索
+	 */
+	private List<Long> getTeamIdBySkill(Map<String, Object> paramMap){
+		String[] skillArray=(String[]) paramMap.get("skill");
+		paramMap.remove("skill");
+		List<Long> teamIds=new ArrayList<Long>();
+		
+		if(ValidateUtil.isValid(skillArray)){			
+			for(int i=0;i<skillArray.length;i++){
+				//根据business查询teamId
+				List<Long> resu=pmsTeamSkillDao.getTeamidByBusinessSkill(skillArray[i]);
+				//各集合取交
+				if(i==0){
+					teamIds=resu;
+				}else{
+					teamIds.retainAll(resu);
+				}
+			}
+			return teamIds;	
+		}
+		//无skill检索条件，跳出返回空集合
+		return null;
 	}
 
 
@@ -116,6 +166,8 @@ public class PmsTeamBiz {
 				pmsTeamBusinessDao.insert(teamBusiness);
 			}
 		}
+		//保存供应商业务技能
+		saveTeamSkill(team);
 		return result;
 	}
 
@@ -135,6 +187,9 @@ public class PmsTeamBiz {
 		long result= pmsTeamDao.updateTeamInfomation(team);
 		//更新team 业务
 		updateBusiness(team);
+		//更新team业务技能
+		pmsTeamSkillDao.deleteByTeamId(team.getTeamId());
+		saveTeamSkill(team);
 		return result;
 	}
 
@@ -184,7 +239,27 @@ public class PmsTeamBiz {
 				pmsTeamBusinessDao.insert(teamBusiness);
 			}
 		}
+		//保存供应商业务技能
+		saveTeamSkill(team);
+		
 		return result;
+	}
+	
+	/**
+	 * 保存供应商业务技能
+	 * @param team
+	 */
+	private void saveTeamSkill(PmsTeam team){
+		String skill=team.getSkill();
+		if(ValidateUtil.isValid(skill)){
+			String[] skillArray=skill.trim().split(",");
+			for(String skillName:skillArray){
+				PmsTeamSkill teamSkill=new PmsTeamSkill();
+				teamSkill.setTeamId(team.getTeamId());
+				teamSkill.setSkillName(skillName);
+				pmsTeamSkillDao.insert(teamSkill);
+			}
+		}
 	}
 
 	public long saveTeamPhotoUrl(final PmsTeam team) {
@@ -195,6 +270,11 @@ public class PmsTeamBiz {
 		long result= pmsTeamDao.update(team);
 		//更新供应商业务范围
 		updateBusiness(team);
+		
+		//更新供应商业务技能--全部删除后重新插入
+		pmsTeamSkillDao.deleteByTeamId(team.getTeamId());
+		saveTeamSkill(team);
+		
 		return result;
 	}
 	
@@ -228,6 +308,10 @@ public class PmsTeamBiz {
 			final long ret = pmsTeamDao.delete(id);
 			//删除对应供应商业务
 			pmsTeamBusinessDao.deleteByTeamId(id);
+			//删除对应供应商业务技能
+			pmsTeamSkillDao.deleteByTeamId(id);
+			//删除对应Teamtmp
+			pmsTeamTmpDao.delTeamByTeamId(id);
 			if (ret > -1)		
 				continue;
 			else
@@ -271,14 +355,68 @@ public class PmsTeamBiz {
 
 	@Transactional
 	public List<PmsTeam> getTeamsByCondition(Map<String, Object> paramMap) {
-		//根据business查询出teamId
-				List<Long> teamIds=getTeamIdByBusiness(paramMap);
-				
-				if(teamIds==null){
-					//无结果,不再查询
-					return new  ArrayList<PmsTeam>();		
-				}
+		// 根据business查询出teamId
+		List<Long> teamIds = getTeamIdByBusiness(paramMap);
+		// 根据skill查询出teamId
+		List<Long> teamIdBySkill = getTeamIdBySkill(paramMap);
+
+		// 结果取交
+		if (teamIds != null) {
+			teamIds.retainAll(teamIdBySkill);
+		} else {
+			teamIds = teamIdBySkill;
+		}
+
+		if (teamIds != null && teamIds.size() == 0) {
+			// 无结果,不再查询
+			return new ArrayList<PmsTeam>();
+		}
+
+		if (teamIds != null) {
+			paramMap.put("teamIds", teamIds);
+		}
 		return pmsTeamDao.listBy(paramMap);
+	}
+
+
+	/**
+	 * 保存（第一次）/更新注册第一步信息
+	 * @param team
+	 * @return
+	 */
+	public long addOrUpdateStep1(PmsTeam team) {
+		long result=0;
+		if(team.getTeamId()==0l){
+			//保存
+			// 注册供应商时，首先检测手机号码是否被注册
+			List<PmsTeam> list = pmsTeamDao.checkTeam(team.getPhoneNumber());
+			if (ValidateUtil.isValid(list))
+				// 如果list不为空，说明数据库有值
+				return -1;
+			// 否则存入数据
+			result = pmsTeamDao.save(team);
+		}else{
+			//更新
+			result=pmsTeamDao.updateSetp1(team);
+			//更新前-业务范围、业务技能
+			pmsTeamBusinessDao.deleteByTeamId(team.getTeamId());
+			pmsTeamSkillDao.deleteByTeamId(team.getTeamId());
+		}
+		
+		// 保存供应商业务范围
+		String business = team.getBusiness();
+		if (ValidateUtil.isValid(business)) {
+			String[] businessArray = business.trim().split(",");
+			for (String businessName : businessArray) {
+				PmsTeamBusiness teamBusiness = new PmsTeamBusiness();
+				teamBusiness.setBusinessName(businessName.trim());
+				teamBusiness.setTeamId(team.getTeamId());
+				pmsTeamBusinessDao.insert(teamBusiness);
+			}
+		}
+		// 保存供应商业务技能
+		saveTeamSkill(team);
+		return result;
 	}
 
 }
