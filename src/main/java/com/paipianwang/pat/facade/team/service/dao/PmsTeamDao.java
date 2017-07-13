@@ -144,5 +144,7 @@ public interface PmsTeamDao extends BaseDao<PmsTeam>{
 	 */
 	public long updateSetp2(PmsTeam team);
 
+	public long updateFlag(long teamId,int flag);
+
 
 }

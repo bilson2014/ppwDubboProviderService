@@ -427,4 +427,10 @@ public class PmsTeamBiz {
 		return pmsTeamDao.updateSetp2(team);
 	}
 
+
+	public long updateFlag(long teamId,int flag) {
+		
+		return pmsTeamDao.updateFlag(teamId,flag);
+	}
+
 }

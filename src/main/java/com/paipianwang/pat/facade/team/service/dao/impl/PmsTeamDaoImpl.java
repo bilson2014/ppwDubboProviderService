@@ -1,4 +1,5 @@
 package com.paipianwang.pat.facade.team.service.dao.impl;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,7 @@ public class PmsTeamDaoImpl extends BaseDaoImpl<PmsTeam> implements PmsTeamDao {
 	public static final String SQL_UNBIND_THIRD = "unBindThird";
 	public static final String SQL_UPDATE_STEP1 = "updateStep1";
 	public static final String SQL_UPDATE_STEP2 = "updateStep2";
+	public static final String SQL_UPDATE_FLAG="updateFlag";
 	
 	
 	@Autowired
@@ -181,5 +183,13 @@ public class PmsTeamDaoImpl extends BaseDaoImpl<PmsTeam> implements PmsTeamDao {
 	@Override
 	public long updateSetp2(PmsTeam team) {
 		return sessionTemplate.update(SQL_UPDATE_STEP2, team);
+	}
+
+	@Override
+	public long updateFlag(long teamId,int flag) {
+		Map<String, Object> paramMap=new HashMap<String, Object>();
+		paramMap.put("teamId",teamId);
+		paramMap.put("flag",flag);
+		return sessionTemplate.update(SQL_UPDATE_FLAG, paramMap);
 	}
 }

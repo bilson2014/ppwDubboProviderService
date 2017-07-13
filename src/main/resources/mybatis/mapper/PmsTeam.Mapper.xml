@@ -640,6 +640,16 @@
 			TEAMID = ${teamId}
 		</where>
 	</update>
+	<update id="updateFlag">
+		UPDATE 
+		<include refid="pms_Team" />
+		<set>
+			FLAG=${flag}
+		</set>
+		<where>
+			TEAMID = ${teamId}
+		</where>
+	</update>
 	
 	<select id="findTeamByArray" resultType="PmsTeam">
 		SELECT t.TEAMID AS teamId,

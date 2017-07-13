@@ -320,5 +320,12 @@ public class PmsTeamServiceImpl implements PmsTeamFacade {
 		return null;
 	}
 
+	//更新注册提交
+	@Override
+	public long updateFlag(long teamId,int flag) {
+		return biz.updateFlag(teamId,flag);
+		
+	}
+
 	
 }
