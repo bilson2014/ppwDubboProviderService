@@ -137,5 +137,12 @@ public interface PmsTeamDao extends BaseDao<PmsTeam>{
 	 */
 	public long updateSetp1(PmsTeam team);
 
+	/**
+	 * 注册第二步更新
+	 * @param team
+	 * @return
+	 */
+	public long updateSetp2(PmsTeam team);
+
 
 }

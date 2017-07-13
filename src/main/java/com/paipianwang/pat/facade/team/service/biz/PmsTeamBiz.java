@@ -418,5 +418,13 @@ public class PmsTeamBiz {
 		saveTeamSkill(team);
 		return result;
 	}
+	/**
+	 * 更新供应商注册第二步信息
+	 * @param team
+	 * @return
+	 */
+	public long updateStep2(PmsTeam team) {
+		return pmsTeamDao.updateSetp2(team);
+	}
 
 }

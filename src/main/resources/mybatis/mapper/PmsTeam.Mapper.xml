@@ -94,7 +94,8 @@
 			   t.TEAMNATURE teamNature,
 			   t.CERTIFICATEURL certificateUrl,
 			   t.IDCARDFRONTURL idCardfrontUrl,
-			   t.IDCARDBACKURL idCardbackUrl
+			   t.IDCARDBACKURL idCardbackUrl,
+			   t.TELNUMBER telNumber
 		    FROM   
 		<include refid="pms_Team" /> t
 				LEFT JOIN  PROVINCE p ON t.teamProvince = p.provinceID 
@@ -228,7 +229,8 @@
 			   t.TEAMNATURE teamNature,
 			   t.CERTIFICATEURL certificateUrl,
 			   t.IDCARDFRONTURL idCardfrontUrl,
-			   t.IDCARDBACKURL idCardbackUrl
+			   t.IDCARDBACKURL idCardbackUrl,
+			   t.TELNUMBER telNumber
 		FROM 
 			<include refid="pms_Team" /> t
 		LEFT JOIN  PROVINCE p ON t.TEAMPROVINCE = p.provinceID 
@@ -313,7 +315,8 @@
 				TEAMNATURE,
 				CERTIFICATEURL,
 				IDCARDFRONTURL,
-				IDCARDBACKURL
+				IDCARDBACKURL,
+				TELNUMBER
 			) VALUES (
 				#{teamName},
 				#{teamPhotoUrl},
@@ -348,7 +351,8 @@
 				#{teamNature},
 				#{certificateUrl},
 				#{idCardfrontUrl},
-				#{idCardbackUrl}
+				#{idCardbackUrl},
+				#{telNumber}
 			)
 		]]>
 	</insert>
@@ -562,7 +566,8 @@
 			DESCRIPTION = #{description},
 			PHONENUMBER = #{phoneNumber},
 			PRODUCTLINE = #{productLine},
-			TEAMNATURE=#{teamNature}
+			TEAMNATURE=#{teamNature},
+			TELNUMBER=#{telNumber}
 			<if test="od != null and od != ''">
 				,OD = ${od}
 			</if>
@@ -581,6 +586,55 @@
 			<if test="teamPhotoUrl != null and teamPhotoUrl != ''">
 				,TEAMPHOTOURL = #{teamPhotoUrl}
 			</if>
+		</set>
+		<where>
+			TEAMID = ${teamId}
+		</where>
+	</update>
+	<update id="updateStep1">
+		UPDATE 
+		<include refid="pms_Team" />
+		<set>
+			TEAMNAME = #{teamName},
+			TEAMNATURE=#{teamNature},
+			SCALE = #{scale},
+			ADDRESS = #{address},
+			OFFICIALSITE = #{officialSite},
+			ESTABLISHDATE = #{establishDate},
+			TEAMDESCRIPTION = #{teamDescription}
+			
+			<if test="teamProvince != null and teamProvince != ''">
+				,TEAMPROVINCE = #{teamProvince}
+			</if>
+			<if test="teamCity != null and teamCity != ''">
+				,TEAMCITY = #{teamCity}
+			</if>
+			<if test="teamPhotoUrl != null and teamPhotoUrl != ''">
+				,TEAMPHOTOURL = #{teamPhotoUrl}
+			</if>
+			<if test="certificateUrl != null and certificateUrl != ''">
+				,CERTIFICATEURL = #{certificateUrl}
+			</if>
+			<if test="idCardfrontUrl != null and idCardfrontUrl != ''">
+				,IDCARDFRONTURL = #{idCardfrontUrl}
+			</if>
+			<if test="idCardbackUrl != null and idCardbackUrl != ''">
+				,IDCARDBACKURL = #{idCardbackUrl}
+			</if>		
+		</set>
+		<where>
+			TEAMID = ${teamId}
+		</where>
+	</update>
+	<update id="updateStep2">
+		UPDATE 
+		<include refid="pms_Team" />
+		<set>
+			LINKMAN = #{linkman},
+			EMAIL = #{email},
+			WEBCHAT = #{webchat},
+			QQ = #{qq},
+			TELNUMBER = #{telNumber}
 		</set>
 		<where>
 			TEAMID = ${teamId}

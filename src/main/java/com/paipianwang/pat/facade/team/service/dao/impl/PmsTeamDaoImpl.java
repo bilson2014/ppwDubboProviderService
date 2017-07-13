@@ -38,6 +38,7 @@ public class PmsTeamDaoImpl extends BaseDaoImpl<PmsTeam> implements PmsTeamDao {
 	public static final String SQL_TEAM_RECOMMEND_LIST = "teamRecommendList";
 	public static final String SQL_UNBIND_THIRD = "unBindThird";
 	public static final String SQL_UPDATE_STEP1 = "updateStep1";
+	public static final String SQL_UPDATE_STEP2 = "updateStep2";
 	
 	
 	@Autowired
@@ -172,5 +173,13 @@ public class PmsTeamDaoImpl extends BaseDaoImpl<PmsTeam> implements PmsTeamDao {
 	@Override
 	public long updateSetp1(PmsTeam team) {
 		return sessionTemplate.update(SQL_UPDATE_STEP1, team);
+	}
+
+	/**
+	 * 更新注册第二步信息
+	 */
+	@Override
+	public long updateSetp2(PmsTeam team) {
+		return sessionTemplate.update(SQL_UPDATE_STEP2, team);
 	}
 }

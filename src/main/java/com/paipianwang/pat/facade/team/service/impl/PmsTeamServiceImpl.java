@@ -307,7 +307,16 @@ public class PmsTeamServiceImpl implements PmsTeamFacade {
 	//更新注册第一步信息
 	@Override
 	public PmsTeam updateStep2(PmsTeam team) {
-		
+		final long ret = biz.updateStep2(team);
+		if (ret > 0){
+			// 保存成功
+			team.setTeamId(team.getTeamId());
+			return team;
+		} else if(ret == -1) {
+			PmsTeam pmsTeam = new PmsTeam();
+			pmsTeam.setTeamId(-1);
+			return pmsTeam;
+		}
 		return null;
 	}
 
