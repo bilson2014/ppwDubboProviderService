@@ -336,7 +336,6 @@
 				#{officialSite},
 				#{scale},
 				#{establishDate},
-			
 				#{businessDesc},
 				${priceRange},
 				#{demand},
@@ -353,6 +352,19 @@
 				#{idCardfrontUrl},
 				#{idCardbackUrl},
 				#{telNumber}
+			)
+		]]>
+	</insert>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="teamId"
+		parameterType="PmsTeam">
+		<![CDATA[
+			INSERT INTO TEAM (
+				PHONENUMBER,
+				PASSWORD
+			) VALUES (
+				#{phoneNumber},
+				#{password}
 			)
 		]]>
 	</insert>

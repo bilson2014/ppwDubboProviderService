@@ -427,10 +427,26 @@ public class PmsTeamBiz {
 		return pmsTeamDao.updateSetp2(team);
 	}
 
-
+	/**
+	 * 更新供应商的审核状态
+	 * @param teamId
+	 * @param flag
+	 * @return
+	 */
 	public long updateFlag(long teamId,int flag) {
 		
 		return pmsTeamDao.updateFlag(teamId,flag);
+	}
+	
+	/**
+	 * 供应商注册流程，点击协议同意按钮后，只保存手机号码以及密码
+	 * 用于保存供应商的手机号码以及密码
+	 * @param team
+	 * @return
+	 */
+	public long saveTelephoneAndPassword(PmsTeam team){
+		pmsTeamDao.insert(team);
+		return team.getTeamId();
 	}
 
 }

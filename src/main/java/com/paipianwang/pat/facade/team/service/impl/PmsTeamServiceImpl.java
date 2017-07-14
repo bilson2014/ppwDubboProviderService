@@ -327,5 +327,10 @@ public class PmsTeamServiceImpl implements PmsTeamFacade {
 		
 	}
 
+	@Override
+	public long registerAtTeamRegisterFlow(PmsTeam team) {
+		return biz.saveTelephoneAndPassword(team);
+	}
+
 	
 }
