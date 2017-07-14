@@ -150,7 +150,7 @@
 			t.FLAG flag,
 			t.LOGINNAME AS loginName,
 			t.DESCRIPTION description,
-			t.SKILL skill
+			tt.SKILL skill
 		 FROM  
 		 <include refid="pms_TeamTmp" />  tt
 		 LEFT JOIN  

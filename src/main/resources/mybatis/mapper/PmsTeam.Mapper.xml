@@ -230,7 +230,8 @@
 			   t.CERTIFICATEURL certificateUrl,
 			   t.IDCARDFRONTURL idCardfrontUrl,
 			   t.IDCARDBACKURL idCardbackUrl,
-			   t.TELNUMBER telNumber
+			   t.TELNUMBER telNumber,
+			   t.ESTABLISHDATE establishDate
 		FROM 
 			<include refid="pms_Team" /> t
 		LEFT JOIN  PROVINCE p ON t.TEAMPROVINCE = p.provinceID 
