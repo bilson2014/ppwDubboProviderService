@@ -11,13 +11,13 @@
 	<dubbo:application name="pat-service-team" />
 	
 	<!-- dubbo接口去除注册中心，采用直连的方式  -->
-	<dubbo:registry address="N/A" />
+	<!-- <dubbo:registry address="N/A" /> -->
 	
 	<!-- 使用multicast广播注册中心暴露发现服务地址 -->
-  	<dubbo:registry address="multicast://224.224.224.2:1224?unicast=false" />
+  	<!-- <dubbo:registry address="multicast://224.224.224.2:1224?unicast=false" /> -->
 
 	<!-- 使用zookeeper注册中心暴露服务地址 -->
-	<!-- <dubbo:registry protocol="zookeeper" address="${dubbo.registry.address}" /> -->
+	<dubbo:registry protocol="zookeeper" address="${dubbo.registry.address}" />
 
 	<!-- 用dubbo协议在20880端口暴露服务 -->
 	<dubbo:protocol name="dubbo" port="25880" />
