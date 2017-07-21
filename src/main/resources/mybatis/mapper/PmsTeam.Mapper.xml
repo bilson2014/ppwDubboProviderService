@@ -67,12 +67,12 @@
 			   t.OFFICIALSITE AS officialSite,
 			   t.SCALE AS scale,
 			   t.ESTABLISHDATE AS establishDate,
-			   GROUP_CONCAT(
+			  <!--  GROUP_CONCAT(
 					DISTINCT bt.businessName SEPARATOR ','
 				) AS business,
 				GROUP_CONCAT(
 					DISTINCT bs.skillName SEPARATOR ','
-				) AS skill,
+				) AS skill, -->
 			   t.BUSINESSDESC AS businessDesc,
 			   t.PRICERANGE AS priceRange,
 			   t.DEMAND AS demand,
@@ -100,13 +100,13 @@
 		<include refid="pms_Team" /> t
 				LEFT JOIN  PROVINCE p ON t.teamProvince = p.provinceID 
 				LEFT JOIN CITY c on t.teamCity = c.cityID 
-				LEFT JOIN TEAM_BUSINESS bt ON t.teamId = bt.teamId
-				LEFT JOIN TEAM_SKILL bs ON t.teamId = bs.teamId
+				<!-- LEFT JOIN TEAM_BUSINESS bt ON t.teamId = bt.teamId
+				LEFT JOIN TEAM_SKILL bs ON t.teamId = bs.teamId -->
 		WHERE 1 = 1
 				AND t.flag != 3
 				<include refid="sql_condition" />
-		GROUP BY
-			t.teamId
+		<!-- GROUP BY
+			t.teamId -->
 		ORDER BY
 			<if test="sort != null and sort != '' and order != null and order != ''">
 				 ${sort} ${order},
@@ -153,7 +153,13 @@
 			   c.CITY AS teamCityName,
 			   t.TEAMPROVINCE AS teamProvince,
 			   t.TEAMCITY AS teamCity,
-			   t.RECOMMEND_SORT recommendSort
+			   t.RECOMMEND_SORT recommendSort,
+			   t.PRODUCTLINE productLine,
+			   t.TEAMNATURE teamNature,
+			   t.CERTIFICATEURL certificateUrl,
+			   t.IDCARDFRONTURL idCardfrontUrl,
+			   t.IDCARDBACKURL idCardbackUrl,
+			   t.TELNUMBER telNumber
 		    FROM   
 		<include refid="pms_Team" /> t
 				LEFT JOIN  PROVINCE p ON t.teamProvince = p.provinceID 
@@ -522,7 +528,8 @@
 			   t.EMAIL AS email,
 			   t.ADDRESS AS address,
 			   t.LOGINNAME AS loginName,
-			   t.PHONENUMBER AS phoneNumber
+			   t.PHONENUMBER AS phoneNumber,
+			   t.BUSINESS AS business
 		FROM 
 		<include refid="pms_Team" />  t
 		<where>
@@ -614,7 +621,8 @@
 			ADDRESS = #{address},
 			OFFICIALSITE = #{officialSite},
 			ESTABLISHDATE = #{establishDate},
-			TEAMDESCRIPTION = #{teamDescription}
+			TEAMDESCRIPTION = #{teamDescription},
+			PRICERANGE = #{priceRange}
 			
 			<if test="teamProvince != null and teamProvince != ''">
 				,TEAMPROVINCE = #{teamProvince}
@@ -848,4 +856,15 @@
 				TEAMID = #{teamId}
 			</where>
 	</update>
+	<select id="getTeamBusiness" resultType="PmsTeam">
+		SELECT t.TEAMID AS teamId,
+			   t.BUSINESS AS business
+	    FROM 
+	    <include refid="pms_Team" /> t  
+	    
+	    <!-- <where>
+	   	 t.flag != 3  AND t.RECOMMEND = 1 
+	    </where> -->
+
+	</select>
 </mapper>

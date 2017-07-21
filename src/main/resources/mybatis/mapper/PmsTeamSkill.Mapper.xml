@@ -38,4 +38,21 @@
 		  	SKILLNAME = #{skillName}
 		  </where>
 	</select>
+	
+	<select id="sqlFindByTeamList" resultType="PmsTeamSkill">
+		SELECT 
+			TEAMID teamId,
+			SKILLNAME skillName
+		  FROM 
+		  <include refid="pms_teamSkill" /> 
+		  <where>
+		  
+		  	teamId IN 
+			<foreach collection="teamIds" open="(" close=")" item="item"
+					separator=",">
+					#{item}
+			</foreach>
+		
+		  </where>
+	</select>
 </mapper>

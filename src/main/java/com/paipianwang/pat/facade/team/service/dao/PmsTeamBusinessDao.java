@@ -1,6 +1,7 @@
 package com.paipianwang.pat.facade.team.service.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.paipianwang.pat.common.core.dao.BaseDao;
 import com.paipianwang.pat.facade.team.entity.PmsTeamBusiness;
@@ -20,4 +21,9 @@ public interface PmsTeamBusinessDao extends BaseDao<PmsTeamBusiness> {
 	 * @return
 	 */
 	public List<Long> getTeamidByBusiness(String businessName);
+
+	/**
+	 * 根据供应商集合获取其业务集合
+	 */
+	public List<PmsTeamBusiness> getByTeams(Map<String, Object> paramMap);
 }

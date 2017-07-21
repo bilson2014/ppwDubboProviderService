@@ -1,6 +1,7 @@
 package com.paipianwang.pat.facade.team.service.dao.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ public class PmsTeamBusinessDaoImpl extends BaseDaoImpl<PmsTeamBusiness> impleme
 
 	public static final String SQL_DELETE_BYTEAMID="deleteByTeamId";
 	public static final String SQL_FIND_TEAMID_BY_BUSINESS="findTeamIdbyBusiness";
+	public static final String SQL_FIND_BY_TEAMLIST="sqlFindByTeamList";
 	
 	@Autowired
 	private SqlSessionTemplate sessionTemplate = null;
@@ -33,6 +35,14 @@ public class PmsTeamBusinessDaoImpl extends BaseDaoImpl<PmsTeamBusiness> impleme
 	@Override
 	public List<Long> getTeamidByBusiness(String businessName) {
 		return sessionTemplate.selectList(getStatement(SQL_FIND_TEAMID_BY_BUSINESS),businessName);
+	}
+
+	/**
+	 * 根据供应商集合获取业务集合
+	 */
+	@Override
+	public List<PmsTeamBusiness> getByTeams(Map<String, Object> paramMap) {
+		return sessionTemplate.selectList(getStatement(SQL_FIND_BY_TEAMLIST),paramMap);
 	}
 	
 }

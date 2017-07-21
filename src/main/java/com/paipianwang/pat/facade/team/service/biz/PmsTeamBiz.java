@@ -47,15 +47,6 @@ public class PmsTeamBiz {
 		//根据skill查询出teamId
 		List<Long> teamIdBySkill=getTeamIdBySkill(paramMap);
 		
-//		if(teamIds!=null || teamIdBySkill!=null){
-//			//无结果,不再查询
-//			return new DataGrid<PmsTeam>(0, new ArrayList<PmsTeam>());		
-//		}
-//		//结果取交，组装检索条件	
-//		if(teamIds.size()>0 && teamIdBySkill.size()>0){
-//			teamIds.retainAll(teamIdBySkill);
-//			paramMap.put("teamIds",teamIds);
-//		}
 		
 		//结果取交
 		if(teamIds!=null){
@@ -73,8 +64,45 @@ public class PmsTeamBiz {
 			paramMap.put("teamIds",teamIds);
 		}
 		
-		return pmsTeamDao.listWithPagination(pageParam, paramMap);
+		DataGrid<PmsTeam> dataGrid= pmsTeamDao.listWithPagination(pageParam, paramMap);
+		
+		//业务范围和业务技能另处理（速度）
+		List<PmsTeam> list= dataGrid.getRows();
+		if(ValidateUtil.isValid(list)){
+			List<Long> ids=new ArrayList<>();
+			for(PmsTeam team:list){
+				ids.add(team.getTeamId());
+			}
+			Map<String, Object> bparamMap=new HashMap<>();
+			bparamMap.put("teamIds", ids);
+			//设置业务范围值
+			List<PmsTeamBusiness> businessList=pmsTeamBusinessDao.getByTeams(bparamMap);
+			list.forEach(team->{
+				StringBuffer businessName=new StringBuffer();
+				for(PmsTeamBusiness business:businessList){
+					if(team.getTeamId()==business.getTeamId()){
+						businessName.append(",").append(business.getBusinessName());
+					}
+				}
+				team.setBusiness(businessName.toString().contains(",")?businessName.toString().substring(1):"");
+			});
+			
+			//设置业务技能值
+			List<PmsTeamSkill> skillList=pmsTeamSkillDao.getByTeams(bparamMap);
+			list.forEach(team->{
+				StringBuffer skillName=new StringBuffer();
+				for(PmsTeamSkill skill:skillList){
+					if(team.getTeamId()==skill.getTeamId()){
+						skillName.append(",").append(skill.getSkillName());
+					}
+				}
+				team.setSkill(skillName.toString().contains(",")?skillName.toString().substring(1):"");
+			});
+		}
+		
+		return dataGrid;
 	}
+	
 	
 	
 	/**
