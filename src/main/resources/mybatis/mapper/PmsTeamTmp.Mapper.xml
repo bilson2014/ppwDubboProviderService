@@ -56,7 +56,8 @@
 				OFFICIALSITE,
 				BUSINESS_DESCRIPTION,
 				TEAMPHOTOURL,
-				SKILL
+				SKILL,
+				TELNUMBER
 			) VALUES (
 				${teamId},
 				#{teamName},
@@ -81,7 +82,8 @@
 				#{officialSite},
 				#{businessDescription},
 				#{teamPhotoUrl},
-				#{skill}
+				#{skill},
+				#{telNumber}
 			)
 		]]>
 	</insert>
@@ -112,7 +114,8 @@
 			OFFICIALSITE officialSite,
 			BUSINESS_DESCRIPTION businessDescription,
 			TEAMPHOTOURL teamPhotoUrl,
-			SKILL skill
+			SKILL skill,
+			TELNUMBER telNumber
 		 FROM 
 		 <include refid="pms_TeamTmp" />  tt
 		 <where>
@@ -150,7 +153,8 @@
 			t.FLAG flag,
 			t.LOGINNAME AS loginName,
 			t.DESCRIPTION description,
-			tt.SKILL skill
+			tt.SKILL skill,
+			tt.TELNUMBER telNumber
 		 FROM  
 		 <include refid="pms_TeamTmp" />  tt
 		 LEFT JOIN  
@@ -176,7 +180,8 @@
 	           p.PROVINCE AS teamProvinceName,
 	           c.CITY AS teamCityName,
 	           tt.TEAMPHOTOURL AS teamPhotoUrl,
-	           tt.SKILL skill
+	           tt.SKILL skill,
+	           tt.TELNUMBER telNumber
 		FROM  
 		<include refid="pms_TeamTmp" />  tt
 		LEFT JOIN  
@@ -239,7 +244,8 @@
 			p.PROVINCE AS teamProvinceName,
 			c.CITY AS teamCityName ,
 			tt.TEAMPHOTOURL AS teamPhotoUrl,
-			SKILL skill
+			SKILL skill,
+			TELNUMBER telNumber
 		 FROM 
 		 <include refid="pms_TeamTmp" /> tt
 		 LEFT JOIN  
@@ -279,7 +285,8 @@
 			OFFICIALSITE officialSite,
 			BUSINESS_DESCRIPTION businessDescription,
 			TEAMPHOTOURL teamPhotoUrl,
-			SKILL skill
+			SKILL skill,
+			TELNUMBER telNumber
 		 FROM  
 		 <include refid="pms_TeamTmp" />
 		 <where>

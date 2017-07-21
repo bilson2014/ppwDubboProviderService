@@ -86,7 +86,7 @@ public class PmsTeamTmpBiz {
 		team.setQq(tmp.getQq());
 		team.setEmail(tmp.getEmail());
 		team.setPriceRange(tmp.getPriceRange());
-		team.setInfoResource(tmp.getInfoResource());
+//		team.setInfoResource(tmp.getInfoResource());
 		team.setTeamDescription(tmp.getTeamDescription());
 		team.setScale(tmp.getScale());
 //		team.setDemand(tmp.getDemand());
@@ -94,6 +94,7 @@ public class PmsTeamTmpBiz {
 		team.setOfficialSite(tmp.getOfficialSite());
 		team.setTeamPhotoUrl(tmp.getTeamPhotoUrl());
 		team.setSkill(tmp.getSkill());
+		team.setTelNumber(tmp.getTelNumber());
 		return team;
 	}
 	public List<DIffBean> findDiffTeam(Integer teamId) {
@@ -123,7 +124,7 @@ public class PmsTeamTmpBiz {
 		if(tmp_team.compareTo(_team) != 0){
 			DIffBean bean = new DIffBean();
 			bean.setProperty("linkman");
-			bean.setPropertyName("联系人");
+			bean.setPropertyName("联系人姓名");
 			bean.setOldValue(_team);
 			bean.setNewValue(tmp_team);
 			list.add(bean);
@@ -165,7 +166,7 @@ public class PmsTeamTmpBiz {
 		if(tmp_team.compareTo(_team) != 0){
 			DIffBean bean = new DIffBean();
 			bean.setProperty("address");
-			bean.setPropertyName("地址");
+			bean.setPropertyName("详细地址");
 			bean.setOldValue(_team);
 			bean.setNewValue(tmp_team);
 			list.add(bean);
@@ -200,16 +201,16 @@ public class PmsTeamTmpBiz {
 			bean.setNewValue(Constants.PRICE_RANGE_MAP.get(tmp_team));
 			list.add(bean);
 		}
-		tmp_team = tmp.getInfoResource().toString();
-		 _team = String.valueOf(team.getInfoResource());
-		if(tmp_team.compareTo(_team) != 0){
-			DIffBean bean = new DIffBean();
-			bean.setProperty("infoResource");
-			bean.setPropertyName("获知渠道");
-			bean.setOldValue(Constants.INFO_RESOURCE_MAP.get(_team));
-			bean.setNewValue(Constants.INFO_RESOURCE_MAP.get(tmp_team));
-			list.add(bean);
-		}
+//		tmp_team = tmp.getInfoResource().toString();
+//		 _team = String.valueOf(team.getInfoResource());
+//		if(tmp_team.compareTo(_team) != 0){
+//			DIffBean bean = new DIffBean();
+//			bean.setProperty("infoResource");
+//			bean.setPropertyName("获知渠道");
+//			bean.setOldValue(Constants.INFO_RESOURCE_MAP.get(_team));
+//			bean.setNewValue(Constants.INFO_RESOURCE_MAP.get(tmp_team));
+//			list.add(bean);
+//		}
 		tmp_team = null == tmp.getBusiness()?"":tmp.getBusiness();
 		_team = null == team.getBusiness()?"":team.getBusiness();
 		if(tmp_team.compareTo(_team) != 0){
@@ -235,7 +236,7 @@ public class PmsTeamTmpBiz {
 		if(tmp_team.compareTo(_team) != 0){
 			DIffBean bean = new DIffBean();
 			bean.setProperty("scale");
-			bean.setPropertyName("公司规模");
+			bean.setPropertyName("规模");
 			bean.setOldValue(Constants.SCALE_MAP.get(_team));
 			bean.setNewValue(Constants.SCALE_MAP.get(tmp_team));
 			list.add(bean);
@@ -255,7 +256,7 @@ public class PmsTeamTmpBiz {
 		if(tmp_team.compareTo(_team) != 0){
 			DIffBean bean = new DIffBean();
 			bean.setProperty("establishDate");
-			bean.setPropertyName("成立时间");
+			bean.setPropertyName("从业时间");
 			bean.setOldValue(_team);
 			bean.setNewValue(tmp_team);
 			list.add(bean);
@@ -265,7 +266,7 @@ public class PmsTeamTmpBiz {
 		if(tmp_team.compareTo(_team) != 0){
 			DIffBean bean = new DIffBean();
 			bean.setProperty("officialSite");
-			bean.setPropertyName("公司官网");
+			bean.setPropertyName("官网网址");
 			bean.setOldValue(_team);
 			bean.setNewValue(tmp_team);
 			list.add(bean);
@@ -297,6 +298,16 @@ public class PmsTeamTmpBiz {
 			DIffBean bean = new DIffBean();
 			bean.setProperty("skill");
 			bean.setPropertyName("业务技能");
+			bean.setOldValue(_team);
+			bean.setNewValue(tmp_team);
+			list.add(bean);
+		}
+		tmp_team=null==tmp.getTelNumber()?"":tmp.getTelNumber();
+		_team=null==team.getTelNumber()?"":team.getTelNumber();
+		if(tmp_team.compareTo(_team)!=0){
+			DIffBean bean = new DIffBean();
+			bean.setProperty("telNumber");
+			bean.setPropertyName("座机");
 			bean.setOldValue(_team);
 			bean.setNewValue(tmp_team);
 			list.add(bean);

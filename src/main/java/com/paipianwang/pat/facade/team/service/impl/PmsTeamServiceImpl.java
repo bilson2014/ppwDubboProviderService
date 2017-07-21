@@ -142,7 +142,7 @@ public class PmsTeamServiceImpl implements PmsTeamFacade {
 		if(null != team.getEstablishDate()){
 			tmp.setEstablishDate(team.getEstablishDate());
 		}
-		tmp.setInfoResource(team.getInfoResource());
+//		tmp.setInfoResource(team.getInfoResource());
 		if(null != team.getLinkman()){
 			tmp.setLinkMan(team.getLinkman());
 		}
@@ -182,6 +182,9 @@ public class PmsTeamServiceImpl implements PmsTeamFacade {
 		}
 		if(null!=team.getSkill()){
 			tmp.setSkill(team.getSkill());
+		}
+		if(null!=team.getTelNumber()){
+			tmp.setTelNumber(team.getTelNumber());
 		}
 		//删除其他tmp
 		biz.delTeamMapperByTeamId(tmp);
