@@ -133,9 +133,9 @@ public class PmsTeamServiceImpl implements PmsTeamFacade {
 		if(null != team.getBusiness()){
 			tmp.setBusiness(team.getBusiness());
 		}
-		if(null != team.getBusinessDesc()){
-			tmp.setBusinessDescription(team.getBusinessDesc());
-		}
+//		if(null != team.getBusinessDesc()){
+//			tmp.setBusinessDescription(team.getBusinessDesc());
+//		}
 		if(null != team.getEmail()){
 			tmp.setEmail(team.getEmail());
 		}
@@ -174,9 +174,9 @@ public class PmsTeamServiceImpl implements PmsTeamFacade {
 		if(null != team.getWebchat()){
 			tmp.setWebchat(team.getWebchat());
 		}
-		if(null != team.getDemand()){
-			tmp.setDemand(team.getDemand());
-		}
+//		if(null != team.getDemand()){
+//			tmp.setDemand(team.getDemand());
+//		}
 		if(null != team.getTeamPhotoUrl()){
 			tmp.setTeamPhotoUrl(team.getTeamPhotoUrl());
 		}

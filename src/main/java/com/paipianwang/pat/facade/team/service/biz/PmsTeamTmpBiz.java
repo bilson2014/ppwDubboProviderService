@@ -77,7 +77,7 @@ public class PmsTeamTmpBiz {
 	private PmsTeam moveInfoToTeam(PmsTeam team, PmsTeamTmp tmp) {
 		team.setAddress(tmp.getAddress());
 		team.setBusiness(tmp.getBusiness());
-		team.setBusinessDesc(tmp.getBusinessDescription());
+//		team.setBusinessDesc(tmp.getBusinessDescription());
 		team.setTeamCity(tmp.getTeamCity());
 		team.setTeamProvince(tmp.getTeamProvince());
 		team.setTeamName(tmp.getTeamName());
@@ -89,10 +89,11 @@ public class PmsTeamTmpBiz {
 		team.setInfoResource(tmp.getInfoResource());
 		team.setTeamDescription(tmp.getTeamDescription());
 		team.setScale(tmp.getScale());
-		team.setDemand(tmp.getDemand());
+//		team.setDemand(tmp.getDemand());
 		team.setEstablishDate(tmp.getEstablishDate());
 		team.setOfficialSite(tmp.getOfficialSite());
 		team.setTeamPhotoUrl(tmp.getTeamPhotoUrl());
+		team.setSkill(tmp.getSkill());
 		return team;
 	}
 	public List<DIffBean> findDiffTeam(Integer teamId) {
@@ -174,7 +175,7 @@ public class PmsTeamTmpBiz {
 		if(tmp_team.compareTo(_team) != 0){
 			DIffBean bean = new DIffBean();
 			bean.setProperty("teamProvince");
-			bean.setPropertyName("省份");
+			bean.setPropertyName("所在省");
 			bean.setOldValue(_team);
 			bean.setNewValue(tmp_team);
 			list.add(bean);
@@ -184,7 +185,7 @@ public class PmsTeamTmpBiz {
 		if(tmp_team.compareTo(_team) != 0){
 			DIffBean bean = new DIffBean();
 			bean.setProperty("teamCity");
-			bean.setPropertyName("城市");
+			bean.setPropertyName("所在市");
 			bean.setOldValue(_team);
 			bean.setNewValue(tmp_team);
 			list.add(bean);
@@ -235,20 +236,20 @@ public class PmsTeamTmpBiz {
 			DIffBean bean = new DIffBean();
 			bean.setProperty("scale");
 			bean.setPropertyName("公司规模");
-			bean.setOldValue(_team);
-			bean.setNewValue(tmp_team);
+			bean.setOldValue(Constants.SCALE_MAP.get(_team));
+			bean.setNewValue(Constants.SCALE_MAP.get(tmp_team));
 			list.add(bean);
 		}
-		tmp_team = null == tmp.getDemand()?"":tmp.getDemand();
-		_team = null == team.getDemand()?"":team.getDemand();
-		if(tmp_team.compareTo(_team) != 0){
-			DIffBean bean = new DIffBean();
-			bean.setProperty("demand");
-			bean.setPropertyName("客户要求");
-			bean.setOldValue(_team);
-			bean.setNewValue(tmp_team);
-			list.add(bean);
-		}
+//		tmp_team = null == tmp.getDemand()?"":tmp.getDemand();
+//		_team = null == team.getDemand()?"":team.getDemand();
+//		if(tmp_team.compareTo(_team) != 0){
+//			DIffBean bean = new DIffBean();
+//			bean.setProperty("demand");
+//			bean.setPropertyName("客户要求");
+//			bean.setOldValue(_team);
+//			bean.setNewValue(tmp_team);
+//			list.add(bean);
+//		}
 		tmp_team = null == tmp.getEstablishDate()?"":tmp.getEstablishDate();
 		_team = null == team.getEstablishDate()?"":team.getEstablishDate();
 		if(tmp_team.compareTo(_team) != 0){
@@ -269,16 +270,16 @@ public class PmsTeamTmpBiz {
 			bean.setNewValue(tmp_team);
 			list.add(bean);
 		}
-		 tmp_team = null == tmp.getBusinessDescription()?"":tmp.getBusinessDescription();
-		 _team = null == team.getBusinessDesc()?"":team.getBusinessDesc();
-		if(tmp_team.compareTo(_team) != 0){
-			DIffBean bean = new DIffBean();
-			bean.setProperty("businessDescription");
-			bean.setPropertyName("主要客户");
-			bean.setOldValue(_team);
-			bean.setNewValue(tmp_team);
-			list.add(bean);
-		}
+//		 tmp_team = null == tmp.getBusinessDescription()?"":tmp.getBusinessDescription();
+//		 _team = null == team.getBusinessDesc()?"":team.getBusinessDesc();
+//		if(tmp_team.compareTo(_team) != 0){
+//			DIffBean bean = new DIffBean();
+//			bean.setProperty("businessDescription");
+//			bean.setPropertyName("主要客户");
+//			bean.setOldValue(_team);
+//			bean.setNewValue(tmp_team);
+//			list.add(bean);
+//		}
 		
 		tmp_team = null == tmp.getTeamPhotoUrl()?"":tmp.getTeamPhotoUrl();
 		 _team = null == team.getTeamPhotoUrl()?"":team.getTeamPhotoUrl();
