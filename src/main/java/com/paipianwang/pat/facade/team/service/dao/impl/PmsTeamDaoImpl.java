@@ -41,6 +41,8 @@ public class PmsTeamDaoImpl extends BaseDaoImpl<PmsTeam> implements PmsTeamDao {
 	public static final String SQL_UPDATE_STEP1 = "updateStep1";
 	public static final String SQL_UPDATE_STEP2 = "updateStep2";
 	public static final String SQL_UPDATE_FLAG="updateFlag";
+	public static final String SQL_FIND_TEAM_BY_TEAMNAME= "findTeamByTeamName";
+	
 	
 	
 	@Autowired
@@ -191,5 +193,13 @@ public class PmsTeamDaoImpl extends BaseDaoImpl<PmsTeam> implements PmsTeamDao {
 		paramMap.put("teamId",teamId);
 		paramMap.put("flag",flag);
 		return sessionTemplate.update(SQL_UPDATE_FLAG, paramMap);
+	}
+
+	@Override
+	public List<PmsTeam> listByTeamName(String teamName) {
+		Map<String, Object> paramMap=new HashMap<String, Object>();
+		paramMap.put("teamName",teamName);
+		paramMap.put("flag",1);
+		return sessionTemplate.selectList(getStatement(SQL_FIND_TEAM_BY_TEAMNAME), paramMap);
 	}
 }

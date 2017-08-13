@@ -146,5 +146,12 @@ public interface PmsTeamDao extends BaseDao<PmsTeam>{
 
 	public long updateFlag(long teamId,int flag);
 
+	/**
+	 * 根据供应商名称模糊匹配供应商
+	 * @param teamName 
+	 * @return
+	 */
+	public List<PmsTeam> listByTeamName(String teamName);
+
 
 }

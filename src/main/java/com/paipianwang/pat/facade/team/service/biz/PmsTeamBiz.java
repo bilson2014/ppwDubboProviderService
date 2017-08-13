@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.paipianwang.pat.common.entity.DataGrid;
 import com.paipianwang.pat.common.entity.PageParam;
+import com.paipianwang.pat.common.util.Constants;
 import com.paipianwang.pat.common.util.ValidateUtil;
 import com.paipianwang.pat.facade.team.entity.PmsTeam;
 import com.paipianwang.pat.facade.team.entity.PmsTeamBusiness;
@@ -475,6 +476,39 @@ public class PmsTeamBiz {
 	public long saveTelephoneAndPassword(PmsTeam team){
 		pmsTeamDao.insert(team);
 		return team.getTeamId();
+	}
+	
+	/**
+	 * 线下方法：处理20170714供应商注册（业务范围结构）变更数据转储
+	 * 注：仅用于版本升级
+	 */
+	public void editBusinessForVersion(){
+		List<PmsTeam> teams=pmsTeamDao.getAll();//getAll 添加 t.BUSINESS AS business返回
+		for(PmsTeam team:teams){
+			String bus=team.getBusiness();
+			System.out.println("edit:"+team.getTeamName()+"-bus:"+bus);
+			
+			if(ValidateUtil.isValid(bus)){
+				pmsTeamBusinessDao.deleteByTeamId(team.getTeamId());//可重复执行
+				String[] buss=bus.split(",");
+				for(String busV:buss){
+					PmsTeamBusiness pt=new PmsTeamBusiness();
+					pt.setTeamId(team.getTeamId());
+					pt.setBusinessName(Constants.BUSINESS_MAP.get(busV));
+					pmsTeamBusinessDao.insert(pt);
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * 根据供应商名称模糊匹配供应商信息
+	 * @param teamName
+	 * @return
+	 */
+	public List<PmsTeam> listByTeamName(String teamName) {
+		return pmsTeamDao.listByTeamName(teamName);
 	}
 
 }

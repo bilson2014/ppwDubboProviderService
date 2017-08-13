@@ -335,5 +335,10 @@ public class PmsTeamServiceImpl implements PmsTeamFacade {
 		return biz.saveTelephoneAndPassword(team);
 	}
 
+	@Override
+	public List<PmsTeam> listByTeamName(String teamName) {
+		return biz.listByTeamName(teamName);
+	}
+
 	
 }

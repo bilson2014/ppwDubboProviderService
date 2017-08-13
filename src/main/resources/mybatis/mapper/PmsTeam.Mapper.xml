@@ -867,4 +867,18 @@
 	    </where> -->
 
 	</select>
+	<select id="findTeamByTeamName" resultType="PmsTeam">
+		SELECT
+		t.TEAMNAME AS teamName,
+		t.TEAMID AS teamId,
+		t.FLAG AS flag,
+		t.LINKMAN AS linkman,
+		t.PHONENUMBER AS phoneNumber
+		FROM 
+		<include refid="pms_Team" /> t 
+		<where>
+			t.TEAMNAME LIKE CONCAT('%',#{teamName},'%')
+			AND t.FLAG = ${flag}
+		</where>
+	</select>
 </mapper>
