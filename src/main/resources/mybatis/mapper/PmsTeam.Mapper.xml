@@ -95,7 +95,9 @@
 			   t.CERTIFICATEURL certificateUrl,
 			   t.IDCARDFRONTURL idCardfrontUrl,
 			   t.IDCARDBACKURL idCardbackUrl,
-			   t.TELNUMBER telNumber
+			   t.TELNUMBER telNumber,
+			   t.DISPLAYNAME displayName,
+			   t.DISPLAYIMG displayImg
 		    FROM   
 		<include refid="pms_Team" /> t
 				LEFT JOIN  PROVINCE p ON t.teamProvince = p.provinceID 
@@ -159,7 +161,9 @@
 			   t.CERTIFICATEURL certificateUrl,
 			   t.IDCARDFRONTURL idCardfrontUrl,
 			   t.IDCARDBACKURL idCardbackUrl,
-			   t.TELNUMBER telNumber
+			   t.TELNUMBER telNumber,
+			   t.DISPLAYNAME displayName,
+			   t.DISPLAYIMG displayImg
 		    FROM   
 		<include refid="pms_Team" /> t
 				LEFT JOIN  PROVINCE p ON t.teamProvince = p.provinceID 
@@ -237,7 +241,9 @@
 			   t.IDCARDFRONTURL idCardfrontUrl,
 			   t.IDCARDBACKURL idCardbackUrl,
 			   t.TELNUMBER telNumber,
-			   t.ESTABLISHDATE establishDate
+			   t.ESTABLISHDATE establishDate,
+			   t.DISPLAYNAME displayName,
+			   t.DISPLAYIMG displayImg
 		FROM 
 			<include refid="pms_Team" /> t
 		LEFT JOIN  PROVINCE p ON t.TEAMPROVINCE = p.provinceID 
@@ -323,7 +329,9 @@
 				CERTIFICATEURL,
 				IDCARDFRONTURL,
 				IDCARDBACKURL,
-				TELNUMBER
+				TELNUMBER,
+				DISPLAYNAME,
+				DISPLAYIMG
 			) VALUES (
 				#{teamName},
 				#{teamPhotoUrl},
@@ -358,7 +366,9 @@
 				#{certificateUrl},
 				#{idCardfrontUrl},
 				#{idCardbackUrl},
-				#{telNumber}
+				#{telNumber},
+				#{displayName},
+				#{displayImg}
 			)
 		]]>
 	</insert>
@@ -587,7 +597,9 @@
 			PHONENUMBER = #{phoneNumber},
 			PRODUCTLINE = #{productLine},
 			TEAMNATURE=#{teamNature},
-			TELNUMBER=#{telNumber}
+			TELNUMBER=#{telNumber},
+			DISPLAYNAME=#{displayName},
+			DISPLAYIMG=#{displayImg}
 			<if test="od != null and od != ''">
 				,OD = ${od}
 			</if>
